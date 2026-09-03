@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountType {
+  INDIVIDUAL
+  BUSINESS
+  AGENCY
+}
+
+model Organization {
+  id          String       @id @default(cuid())
+  name        String
+  nameAr      String
+  type        AccountType
+  contractRef String
+  validUntil  DateTime
+  sdgRate     Int          @default(2600)
+  users       User[]
+  approvers   Approver[]
+  documents   Document[]
+  createdAt   DateTime     @default(now())
+}
+
+model User {
+  id             String        @id @default(cuid())
+  phone          String        @unique
+  name           String
+  nameAr         String?
+  accountType    AccountType   @default(INDIVIDUAL)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  bookings       Booking[]
+  createdAt      DateTime      @default(now())
+}
+
+model Approver {
+  id             String       @id @default(cuid())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  name           String
+  nameAr         String
+  role           String
+  roleAr         String
+  maxApprovalUsd Int?
+}
+
+model Vehicle {
+  id           String        @id
+  name         String
+  category     String
+  badge        String
+  badgeAr      String
+  seats        Int
+  bags         Int
+  gear         String
+  fuel         String
+  dailyRateUsd Int
+  incEn        String // JSON-encoded string[]
+  incAr        String // JSON-encoded string[]
+  units        VehicleUnit[]
+  bookings     Booking[]
+}
+
+model VehicleUnit {
+  id        String    @id @default(cuid())
+  vehicle   Vehicle   @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+  plate     String    @unique
+  busyUntil DateTime?
+  bookings  Booking[]
+}
+
+model Location {
+  id     Int    @id @default(autoincrement())
+  nameEn String
+  nameAr String
+  subEn  String
+  subAr  String
+}
+
+model Addon {
+  id       String @id
+  nameEn   String
+  nameAr   String
+  subEn    String
+  subAr    String
+  priceUsd Int
+  unit     String // 'once' | 'day'
+}
+
+model PayMethod {
+  id      String  @id // 'invoice' | 'bankak' | 'mbok' | 'cash'
+  nameEn  String
+  nameAr  String
+  subEn   String
+  subAr   String
+  orgOnly Boolean @default(false)
+}
+
+model Booking {
+  id            String       @id @default(cuid())
+  ref           String       @unique
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  vehicle       Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicleId     String
+  unit          VehicleUnit? @relation(fields: [unitId], references: [id])
+  unitId        String?
+  pickupDate    DateTime
+  returnDate    DateTime
+  locationId    Int
+  driver        Boolean
+  driverName    String?
+  addonsJson    String // JSON-encoded string[] of addon ids
+  orgName       String?
+  costCentre    String?
+  poRef         String?
+  payMethod     String
+  needsApproval Boolean
+  approverId    String?
+  stage         Int          @default(0) // 0 requested .. 4 closed
+  cancelled     Boolean      @default(false)
+  costTotalUsd  Int
+  depositUsd    Int
+  createdAt     DateTime     @default(now())
+}
+
+model Document {
+  id             String        @id @default(cuid())
+  type           String // 'invoice' | 'contract'
+  ref            String
+  bookingRef     String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  titleEn        String
+  titleAr        String
+  date           DateTime
+  amountUsd      Int?
+  status         String // 'outstanding' | 'settled' | 'active'
+}
+
+// Hashed, expiring, single-use verification codes — never store the code in plaintext.
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  codeHash  String
+  expiresAt DateTime
+  consumed  Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([phone])
+}
+
+// Single-row counter driving sequential booking references under a DB
+// transaction, so two concurrent bookings can never collide on the same ref
+// (the mobile-only prototype had this bug — a local counter per device).
+model RefCounter {
+  id    String @id @default("booking_ref")
+  value Int    @default(444)
+}
