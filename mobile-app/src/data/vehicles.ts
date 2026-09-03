@@ -41,8 +41,8 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 6033', busyUntil: null },
       { plate: 'KRT 7781', busyUntil: busy(16) },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance', 'Airport delivery available'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧', 'توصيل من المطار عند الطلب'],
+    inc: ['Comprehensive insurance', 'GPS/GSM vehicle tracking', 'Shovel & tow rope kit', 'Immediate replacement vehicle in Khartoum'],
+    incAr: ['تأمين شامل', 'تتبع GPS/GSM', 'عدة جرافة وحبل سحب', 'سيارة بديلة فورية داخل الخرطوم'],
   },
   {
     id: 'voleex', name: 'Great Wall Voleex C30', cat: 'Sedan', badge: 'Sedan / Economy', badgeAr: 'سيدان / اقتصادية',
@@ -52,8 +52,8 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 2415', busyUntil: null }, { plate: 'KRT 2588', busyUntil: busy(3) },
       { plate: 'KRT 2604', busyUntil: null }, { plate: 'KRT 2790', busyUntil: null },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', 'City driving package'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'باقة القيادة داخل المدينة'],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'GPS/GSM vehicle tracking'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'تتبع GPS/GSM'],
   },
   {
     id: 'hilux', name: 'Toyota Hilux', cat: 'Truck', badge: 'Truck / Utility', badgeAr: 'بيك أب / خدمات',
@@ -62,8 +62,8 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 8801', busyUntil: null }, { plate: 'KRT 8834', busyUntil: null },
       { plate: 'KRT 8902', busyUntil: busy(11) }, { plate: 'KRT 9010', busyUntil: null }, { plate: 'KRT 9155', busyUntil: null },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Load securing kit', 'Off-road ready'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'عدة تثبيت الحمولة', 'جاهزة للطرق الوعرة'],
+    inc: ['Comprehensive insurance', 'GPS/GSM vehicle tracking', 'Load securing kit', 'Immediate replacement vehicle in Khartoum'],
+    incAr: ['تأمين شامل', 'تتبع GPS/GSM', 'عدة تثبيت الحمولة', 'سيارة بديلة فورية داخل الخرطوم'],
   },
   {
     id: 'limo', name: 'Luxury Limousine', cat: 'VIP', badge: 'VIP', badgeAr: 'كبار الشخصيات',
@@ -78,8 +78,8 @@ export const VEHICLES: Vehicle[] = [
     units: [
       { plate: 'KRT 3300', busyUntil: null }, { plate: 'KRT 3412', busyUntil: null }, { plate: 'KRT 3577', busyUntil: busy(20) },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance', 'Airport meet & greet'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧', 'استقبال في المطار'],
+    inc: ['Comprehensive insurance', 'GPS/GSM vehicle tracking', 'Shovel & tow rope kit', 'Immediate replacement vehicle in Khartoum'],
+    incAr: ['تأمين شامل', 'تتبع GPS/GSM', 'عدة جرافة وحبل سحب', 'سيارة بديلة فورية داخل الخرطوم'],
   },
   {
     id: 'hiace', name: 'Toyota Hiace', cat: 'Van', badge: 'Van / Group', badgeAr: 'فان / مجموعات',
@@ -88,15 +88,15 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 7010', busyUntil: null }, { plate: 'KRT 7122', busyUntil: null },
       { plate: 'KRT 7288', busyUntil: null }, { plate: 'KRT 7301', busyUntil: busy(23) },
     ],
-    inc: ['Driver included', 'Comprehensive insurance', 'A/C throughout'],
-    incAr: ['يشمل السائق', 'تأمين شامل', 'تكييف كامل'],
+    inc: ['Driver included', 'Comprehensive insurance', 'GPS/GSM vehicle tracking', 'First aid kit on board'],
+    incAr: ['يشمل السائق', 'تأمين شامل', 'تتبع GPS/GSM', 'حقيبة إسعافات أولية'],
   },
   {
     id: 'coaster', name: 'Toyota Coaster', cat: 'Bus', badge: 'Bus / Group', badgeAr: 'باص / مجموعات',
     seats: 30, bags: 20, gear: 'Manual', fuel: 'Diesel', rate: 200,
     units: [{ plate: 'KRT 5001', busyUntil: null }, { plate: 'KRT 5140', busyUntil: busy(14) }],
-    inc: ['Driver included', 'Comprehensive insurance', 'Luggage hold', 'Onboard water'],
-    incAr: ['يشمل السائق', 'تأمين شامل', 'حجرة أمتعة', 'مياه على متن الباص'],
+    inc: ['Driver included', 'Comprehensive insurance', 'GPS/GSM vehicle tracking', 'Luggage hold'],
+    incAr: ['يشمل السائق', 'تأمين شامل', 'تتبع GPS/GSM', 'حجرة أمتعة'],
   },
   {
     id: 'corolla', name: 'Toyota Corolla', cat: 'Sedan', badge: 'Sedan / Comfort', badgeAr: 'سيدان / مريحة',
@@ -106,8 +106,8 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 1444', busyUntil: null }, { plate: 'KRT 1520', busyUntil: null }, { plate: 'KRT 1666', busyUntil: busy(1) },
       { plate: 'KRT 1777', busyUntil: null },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'GPS/GSM vehicle tracking'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'تتبع GPS/GSM'],
   },
   {
     id: 'accent', name: 'Hyundai Accent', cat: 'Sedan', badge: 'Sedan / Economy', badgeAr: 'سيدان / اقتصادية',
@@ -116,8 +116,8 @@ export const VEHICLES: Vehicle[] = [
       { plate: 'KRT 1810', busyUntil: null }, { plate: 'KRT 1822', busyUntil: null },
       { plate: 'KRT 1845', busyUntil: busy(5) }, { plate: 'KRT 1861', busyUntil: null },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'GPS/GSM vehicle tracking'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'تتبع GPS/GSM'],
   },
   {
     id: 'sorento', name: 'Kia Sorento', cat: 'SUV', badge: 'SUV / Comfort', badgeAr: 'دفع رباعي / مريحة',
@@ -125,8 +125,8 @@ export const VEHICLES: Vehicle[] = [
     units: [
       { plate: 'KRT 3910', busyUntil: null }, { plate: 'KRT 3924', busyUntil: busy(9) }, { plate: 'KRT 3947', busyUntil: null },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧'],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Immediate replacement vehicle in Khartoum'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'سيارة بديلة فورية داخل الخرطوم'],
   },
   {
     id: 'camry', name: 'Toyota Camry', cat: 'VIP', badge: 'VIP Sedan', badgeAr: 'سيدان كبار الشخصيات',
@@ -134,8 +134,8 @@ export const VEHICLES: Vehicle[] = [
     units: [
       { plate: 'KRT 0510', busyUntil: null }, { plate: 'KRT 0524', busyUntil: null }, { plate: 'KRT 0538', busyUntil: busy(12) },
     ],
-    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Airport meet & greet'],
-    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'استقبال في المطار'],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Professional chauffeur available'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'سائق محترف عند الطلب'],
   },
 ];
 
