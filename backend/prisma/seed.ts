@@ -35,15 +35,19 @@ async function main() {
     },
   });
 
-  const unhcr = await prisma.organization.upsert({
-    where: { id: 'org-unhcr' },
+  // Real, named client from BV's own reference list (not fictional like the
+  // rest of this seed's individual contacts) — WFP is BV's longest-standing
+  // UN client per the company profile. No personal staff contact info is
+  // seeded here; that belongs to the named individual at WFP, not BV.
+  const wfp = await prisma.organization.upsert({
+    where: { id: 'org-wfp' },
     update: {},
     create: {
-      id: 'org-unhcr',
-      name: 'UNHCR — Sudan Operation',
-      nameAr: 'المفوضية — عمليات السودان',
+      id: 'org-wfp',
+      name: 'World Food Programme — Sudan Country Office',
+      nameAr: 'برنامج الأغذية العالمي — المكتب القطري السودان',
       type: AccountType.AGENCY,
-      contractRef: 'BV-UNHCR-24',
+      contractRef: 'BV-WFP-24',
       validUntil: new Date('2026-12-31'),
       sdgRate: 2600,
     },
@@ -55,7 +59,7 @@ async function main() {
     { name: 'Sara Abdelrahman', nameAr: 'سارة عبد الرحمن', role: 'Finance Focal Point · approves any amount', roleAr: 'المسؤول المالي · يعتمد أي مبلغ', maxApprovalUsd: null },
     { name: 'Tarig Ibrahim', nameAr: 'طارق إبراهيم', role: 'Logistics Officer · approves to $1,500', roleAr: 'مسؤول اللوجستيات · يعتمد حتى ١٥٠٠ دولار', maxApprovalUsd: 1500 },
   ];
-  for (const org of [blueNile, unhcr]) {
+  for (const org of [blueNile, wfp]) {
     for (const a of approverSeed) {
       const existing = await prisma.approver.findFirst({ where: { organizationId: org.id, name: a.name } });
       if (!existing) await prisma.approver.create({ data: { ...a, organizationId: org.id } });
@@ -76,7 +80,7 @@ async function main() {
   const agencyUser = await prisma.user.upsert({
     where: { phone: '0900000003' },
     update: {},
-    create: { phone: '0900000003', name: 'UNHCR — Sudan Operation', nameAr: 'المفوضية — عمليات السودان', accountType: AccountType.AGENCY, organizationId: unhcr.id },
+    create: { phone: '0900000003', name: 'World Food Programme — Sudan Country Office', nameAr: 'برنامج الأغذية العالمي — المكتب القطري السودان', accountType: AccountType.AGENCY, organizationId: wfp.id },
   });
   void individual;
   void agencyUser;
@@ -103,7 +107,7 @@ async function main() {
       inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance', 'Airport meet & greet'],
       incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧', 'استقبال في المطار'],
       units: [{ plate: 'KRT 3300', busyUntil: null }, { plate: 'KRT 3412', busyUntil: null }, { plate: 'KRT 3577', busyUntil: busy(20) }] },
-    { id: 'hiace', name: 'Toyota Hiace', category: 'Van', badge: 'Van / Group', badgeAr: 'فان / مجموعات', seats: 14, bags: 8, gear: 'Manual', fuel: 'Diesel', dailyRateUsd: 120,
+    { id: 'hiace', name: 'Toyota Hiace', category: 'Van', badge: 'Van / Group', badgeAr: 'فان / مجموعات', seats: 11, bags: 8, gear: 'Manual', fuel: 'Diesel', dailyRateUsd: 120,
       inc: ['Driver included', 'Comprehensive insurance', 'A/C throughout'],
       incAr: ['يشمل السائق', 'تأمين شامل', 'تكييف كامل'],
       units: [{ plate: 'KRT 7010', busyUntil: null }, { plate: 'KRT 7122', busyUntil: null }, { plate: 'KRT 7288', busyUntil: null }, { plate: 'KRT 7301', busyUntil: busy(23) }] },
@@ -115,6 +119,18 @@ async function main() {
       inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
       incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
       units: [{ plate: 'KRT 1102', busyUntil: null }, { plate: 'KRT 1233', busyUntil: null }, { plate: 'KRT 1390', busyUntil: null }, { plate: 'KRT 1444', busyUntil: null }, { plate: 'KRT 1520', busyUntil: null }, { plate: 'KRT 1666', busyUntil: busy(1) }, { plate: 'KRT 1777', busyUntil: null }] },
+    { id: 'accent', name: 'Hyundai Accent', category: 'Sedan', badge: 'Sedan / Economy', badgeAr: 'سيدان / اقتصادية', seats: 5, bags: 2, gear: 'Manual', fuel: 'Petrol', dailyRateUsd: 40,
+      inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
+      incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
+      units: [{ plate: 'KRT 1810', busyUntil: null }, { plate: 'KRT 1822', busyUntil: null }, { plate: 'KRT 1845', busyUntil: busy(5) }, { plate: 'KRT 1861', busyUntil: null }] },
+    { id: 'sorento', name: 'Kia Sorento', category: 'SUV', badge: 'SUV / Comfort', badgeAr: 'دفع رباعي / مريحة', seats: 7, bags: 4, gear: 'Auto', fuel: 'Petrol', dailyRateUsd: 130,
+      inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance'],
+      incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧'],
+      units: [{ plate: 'KRT 3910', busyUntil: null }, { plate: 'KRT 3924', busyUntil: busy(9) }, { plate: 'KRT 3947', busyUntil: null }] },
+    { id: 'camry', name: 'Toyota Camry', category: 'VIP', badge: 'VIP Sedan', badgeAr: 'سيدان كبار الشخصيات', seats: 5, bags: 3, gear: 'Auto', fuel: 'Petrol', dailyRateUsd: 85,
+      inc: ['Comprehensive insurance', 'Unlimited mileage', 'Airport meet & greet'],
+      incAr: ['تأمين شامل', 'مسافة غير محدودة', 'استقبال في المطار'],
+      units: [{ plate: 'KRT 0510', busyUntil: null }, { plate: 'KRT 0524', busyUntil: null }, { plate: 'KRT 0538', busyUntil: busy(12) }] },
   ];
 
   for (const v of vehicleSeed) {

@@ -4,7 +4,7 @@ import { colors } from '../theme/colors';
 import { textStyle } from '../theme/text';
 import { useI18n } from '../i18n/useI18n';
 import { useAppStore } from '../store/useAppStore';
-import { accountTypeLabel, initialsOf, BV_CONTACT } from '../data/account';
+import { accountTypeLabel, initialsOf, BV_CONTACT, BV_LEGAL, TRUSTED_BY } from '../data/account';
 import { useCatalogStore } from '../store/useCatalogStore';
 import { dateLabel } from '../utils/dates';
 import Starfield from '../components/Starfield';
@@ -121,10 +121,29 @@ export default function AccountScreen() {
             </View>
           </View>
 
+          <View style={{ marginTop: 20, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.1)', paddingTop: 16 }}>
+            <Text style={[textStyle({ weight: 600, size: 9.5, color: colors.onDarkFaint, isArabic, trackingPx: 1.6, uppercase: true }), { marginBottom: 11 }]}>
+              {isArabic ? 'من عملائنا' : 'Trusted by'}
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
+              {TRUSTED_BY.map((name) => (
+                <View key={name} style={{ backgroundColor: 'rgba(255,255,255,.08)', borderRadius: 100, paddingHorizontal: 11, paddingVertical: 6 }}>
+                  <Text style={textStyle({ weight: 500, size: 10.5, color: colors.onDarkSoft, isArabic: false })}>{name}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={[textStyle({ weight: 300, size: 10.5, color: colors.onDarkSoft, isArabic }), { marginTop: 11 }]}>
+              {isArabic ? 'أكثر من ٨٠٠٠ عميل دولي منذ ٢٠١٦' : '8,000+ international clients since 2016'}
+            </Text>
+          </View>
+
           <Pressable onPress={signOut} style={{ width: '100%', minHeight: 48, marginTop: 20, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(255,255,255,.18)', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={textStyle({ weight: 600, size: 12.5, color: '#fff', isArabic })}>{t.signOut}</Text>
           </Pressable>
-          <Text style={[textStyle({ weight: 300, size: 10, color: '#8E8E93', isArabic }), { textAlign: 'center', marginTop: 16 }]}>© 2026 BV Bavarian Rent A Car · v2.0.0</Text>
+          <Text style={[textStyle({ weight: 300, size: 10, color: '#8E8E93', isArabic }), { textAlign: 'center', marginTop: 16, lineHeight: 15 }]}>
+            {isArabic ? BV_LEGAL.entityAr : BV_LEGAL.entityEn} · {isArabic ? 'سجل تجاري رقم' : 'Reg. No.'} {BV_LEGAL.registrationNo}
+            {'\n'}© 2026 BV Bavarian Rent A Car · v2.0.0
+          </Text>
         </View>
       </View>
     </ScrollView>

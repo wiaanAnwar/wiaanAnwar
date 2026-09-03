@@ -126,7 +126,7 @@ export default function HomeScreen() {
               <Text style={{ color: colors.gold, fontSize: 11, letterSpacing: 2 }}>★★★★★</Text>
               <View style={{ flex: 1 }}>
                 <Text style={[textStyle({ weight: 600, size: 12, color: '#fff', isArabic, lineHeight: 16 })]}>
-                  {isArabic ? 'BV بافاريان — تأجير سيارات فاخرة منذ أكثر من 10 سنوات' : 'BV Bavarian — premium car rental, 10+ years in Khartoum'}
+                  {isArabic ? 'BV بافاريان — أسطول يضم أكثر من ٢٥٠ سيارة في الخرطوم' : 'BV Bavarian — 250+ vehicles strong, Khartoum since 2009'}
                 </Text>
               </View>
               <Pressable onPress={dismissHero} style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>

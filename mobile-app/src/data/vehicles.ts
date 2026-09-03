@@ -83,7 +83,7 @@ export const VEHICLES: Vehicle[] = [
   },
   {
     id: 'hiace', name: 'Toyota Hiace', cat: 'Van', badge: 'Van / Group', badgeAr: 'فان / مجموعات',
-    seats: 14, bags: 8, gear: 'Manual', fuel: 'Diesel', rate: 120,
+    seats: 11, bags: 8, gear: 'Manual', fuel: 'Diesel', rate: 120,
     units: [
       { plate: 'KRT 7010', busyUntil: null }, { plate: 'KRT 7122', busyUntil: null },
       { plate: 'KRT 7288', busyUntil: null }, { plate: 'KRT 7301', busyUntil: busy(23) },
@@ -108,6 +108,34 @@ export const VEHICLES: Vehicle[] = [
     ],
     inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
     incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
+  },
+  {
+    id: 'accent', name: 'Hyundai Accent', cat: 'Sedan', badge: 'Sedan / Economy', badgeAr: 'سيدان / اقتصادية',
+    seats: 5, bags: 2, gear: 'Manual', fuel: 'Petrol', rate: 40,
+    units: [
+      { plate: 'KRT 1810', busyUntil: null }, { plate: 'KRT 1822', busyUntil: null },
+      { plate: 'KRT 1845', busyUntil: busy(5) }, { plate: 'KRT 1861', busyUntil: null },
+    ],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Economical city runs'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'اقتصادية للتنقل داخل المدينة'],
+  },
+  {
+    id: 'sorento', name: 'Kia Sorento', cat: 'SUV', badge: 'SUV / Comfort', badgeAr: 'دفع رباعي / مريحة',
+    seats: 7, bags: 4, gear: 'Auto', fuel: 'Petrol', rate: 130,
+    units: [
+      { plate: 'KRT 3910', busyUntil: null }, { plate: 'KRT 3924', busyUntil: busy(9) }, { plate: 'KRT 3947', busyUntil: null },
+    ],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', '24/7 roadside assistance'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'مساعدة على الطريق ٢٤/٧'],
+  },
+  {
+    id: 'camry', name: 'Toyota Camry', cat: 'VIP', badge: 'VIP Sedan', badgeAr: 'سيدان كبار الشخصيات',
+    seats: 5, bags: 3, gear: 'Auto', fuel: 'Petrol', rate: 85,
+    units: [
+      { plate: 'KRT 0510', busyUntil: null }, { plate: 'KRT 0524', busyUntil: null }, { plate: 'KRT 0538', busyUntil: busy(12) },
+    ],
+    inc: ['Comprehensive insurance', 'Unlimited mileage', 'Airport meet & greet'],
+    incAr: ['تأمين شامل', 'مسافة غير محدودة', 'استقبال في المطار'],
   },
 ];
 

@@ -28,3 +28,23 @@ export const BV_CONTACT = {
   hours: { satThu: '8:00 – 18:00' },
   sdgRate: 2600, // fallback only — real accounts get their org's rate from the backend
 };
+
+// From BV's Ministry of Justice Certificate of Registration (No. 65417,
+// registered 31 Aug 2015, Khartoum) and company profile — the trading name
+// "BV Bavarian Rent a Car" is what the app shows everywhere else; this is
+// the legal entity behind it, for the one place a registered business
+// discloses that (account footer).
+export const BV_LEGAL = {
+  entityEn: 'Albavaria Limousine Project',
+  entityAr: 'مشروع البافارية ليموزين',
+  registrationNo: '65417',
+  foundedYear: 2009,
+};
+
+// Real, named clients from BV's own company profile and reference list —
+// organisation names only. Individual staff contacts at these agencies are
+// not included; that's their personal information, not BV's to publish.
+export const TRUSTED_BY: string[] = [
+  'WFP', 'UNICEF', 'WHO', 'FAO', 'IOM',
+  'MSF', 'Save the Children', 'GIZ', 'IRC', 'Oxfam', 'DRC', 'Plan International', 'AAR Japan',
+];
