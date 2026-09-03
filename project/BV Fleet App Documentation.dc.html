@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics><style>doc-page:not(:defined){visibility:hidden}</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"><script src="./doc-page.js"></script><style>
+body{margin:0;font-family:Poppins,system-ui,sans-serif}
+h1,h2,h3{font-family:Poppins,sans-serif;color:#131315}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid #DDD;padding:6px 9px;text-align:left;vertical-align:top}
+th{background:#F5F5F5;font-weight:600}
+code{background:#F2F2F2;padding:1px 5px;border-radius:4px;font-size:12.5px}
+a{color:#B01F1B}a:hover{color:#8C1815}
+</style></helmet>
+
+<doc-page margin="0.85in">
+
+<div style="font:600 10px Poppins,sans-serif;letter-spacing:.18em;color:#B01F1B">BV BAVARIAN RENT A CAR — MOBILE APP</div>
+<h1 style="font:700 30px Poppins,sans-serif;letter-spacing:-.02em;margin:6px 0 4px">Product &amp; Engineering Documentation</h1>
+<div style="font:300 13px Poppins,sans-serif;color:#666">v2 — hardened · Prototype documentation, September 2026</div>
+
+<h2>1. Overview</h2>
+<p>BV Fleet is the customer-facing rental app for BV Bavarian Rent A Car, a Khartoum-based vehicle hire operator. It lets individual, corporate and UN/INGO customers search a date-scoped fleet, request a hire, and track it through to return — in English or Arabic (RTL). This document covers the product's planning goals, the visual/interaction design, and how the current prototype is implemented.</p>
+
+<h2>2. Planning</h2>
+
+<h3>2.1 Goals</h3>
+<ul>
+<li><strong>Date-first search.</strong> Nothing books what isn't actually free — the calendar drives which vehicles show, with a "next free" date surfaced for the rest instead of hiding them.</li>
+<li><strong>Serve three account types</strong> from one app: walk-up individuals, corporate accounts with standing agreements, and UN/INGO agencies that need internal approval before a request reaches BV.</li>
+<li><strong>Payment flexibility</strong> matching how BV is actually paid: invoice-to-account, Bankak transfer, mobile money, or cash with a deposit at collection.</li>
+<li><strong>Trips that do something</strong> after booking — a live status timeline, direct call/WhatsApp to the assigned driver, amend and cancel with the policy shown up front.</li>
+<li><strong>Arabic parity.</strong> Full RTL layout and translated copy, not a mirrored afterthought.</li>
+<li><strong>Resilience.</strong> The app should degrade honestly — loading skeletons, an offline banner over cached data, and a WhatsApp fallback if a submission fails — rather than pretend everything always works.</li>
+</ul>
+
+<h3>2.2 Audiences</h3>
+<table>
+<tr><th>Account type</th><th>Who</th><th>Needs</th></tr>
+<tr><td>Individual</td><td>Walk-up customer, pay as you go</td><td>Fast search, cash/mobile money, no paperwork</td></tr>
+<tr><td>Business</td><td>Corporate account holder (e.g. a trading company)</td><td>Invoice-to-account, cost centre/PO reference, monthly spend visibility</td></tr>
+<tr><td>UN &amp; INGO</td><td>Agency operations/logistics staff</td><td>Named internal approver sign-off before BV sees the request, PO/WBS codes, framework agreement reference</td></tr>
+</table>
+
+<h3>2.3 Information architecture</h3>
+<p>Four tabs: <strong>Home</strong> (hero, quick search, active-hire card, services, account snapshot), <strong>Fleet</strong> (date-scoped results with category filters), <strong>Trips</strong> (Active / Upcoming / Past, each with a status timeline), <strong>Account</strong> (profile, agreement, business hours, contact, sign out). Search and vehicle detail open as full-screen sheets over the tab content rather than new tabs, keeping the four-tab structure fixed regardless of where the user is in a booking.</p>
+
+<h2>3. Design</h2>
+
+<h3>3.1 Visual system</h3>
+<p>Palette: near-black (<code>#0B0B0C</code> / <code>#1A1A1C</code>) as the primary surface, warm gold (<code>#F5B301</code>) as the brand accent, and red (<code>#DD2A26</code>) for calls to action and status — a deliberately automotive, slightly premium palette rather than a generic light-mode rental app. Content sheets (search, results, detail, forms) switch to a near-white <code>#F7F7F7</code>/<code>#fff</code> surface for readability and to separate "browsing" from "brand" moments (hero, header, account, active-hire card).</p>
+<p>Typeface: Poppins for Latin copy, Cairo for Arabic — swapped automatically with the language, both loaded from Google Fonts. Headings use tight negative letter-spacing; small labels/eyebrows use wide positive letter-spacing and uppercase — the two recurring type moves that give the hierarchy its shape.</p>
+
+<h3>3.2 Screen-by-screen</h3>
+<table>
+<tr><th>Screen</th><th>Purpose</th><th>Key elements</th></tr>
+<tr><td>Sign in</td><td>Auth gate</td><td>Phone number → OTP, or continue as guest</td></tr>
+<tr><td>Home</td><td>Orientation + fast path to search</td><td>Hero (dismissible), pickup/return/location quick search, active-hire status card, service shortcuts, account snapshot</td></tr>
+<tr><td>Fleet (search results)</td><td>Browse what's actually free</td><td>Date/location summary bar, category filter chips, result cards with availability dot and "next free" date, loading skeletons, empty state</td></tr>
+<tr><td>Vehicle detail</td><td>Decide on one vehicle</td><td>Spec grid, included items, policies, sticky total + CTA</td></tr>
+<tr><td>Booking (5 steps)</td><td>Collect what BV needs to confirm</td><td>Dates/vehicle recap → driver &amp; extras → billing &amp; approver → payment method &amp; deposit → review &amp; submit</td></tr>
+<tr><td>Confirmation</td><td>Close the loop</td><td>Reference number, "sent for approval" vs "sent to BV" messaging depending on account type</td></tr>
+<tr><td>Trips</td><td>Track and act on existing hires</td><td>Status timeline (Requested → Approved → Confirmed → On hire → Closed), driver contact, amend/cancel/documents</td></tr>
+<tr><td>Account</td><td>Identity, agreement, contact, sign out</td><td>Agreement reference &amp; validity, business hours, BV contact details</td></tr>
+</table>
+
+<h3>3.3 States handled deliberately</h3>
+<ul>
+<li><strong>Search skeletons</strong> while results "load" (simulated delay).</li>
+<li><strong>Offline banner</strong> — a persistent red strip when the network tweak is set to Offline, with cached data still shown underneath.</li>
+<li><strong>Submit failure</strong> — the review step can fail to submit, surfacing a retry and a "send over WhatsApp" fallback so a request is never silently lost.</li>
+<li><strong>Empty states</strong> for no fleet matches and no trips, each with a clear next action.</li>
+<li><strong>Blocked continue</strong> — the primary button visibly dims and explains itself when a required field is missing, instead of failing silently on submit.</li>
+</ul>
+
+<h3>3.4 Internationalisation</h3>
+<p>Every string in the app comes from a single English/Arabic dictionary; switching language flips <code>dir</code> to <code>rtl</code>, swaps the font family, and removes Latin-style letter-spacing (which reads badly on Arabic glyphs). Phone numbers, references and dates that must stay left-to-right (e.g. <code>0912301407</code>) are pinned with <code>dir="ltr"</code> even inside an RTL page.</p>
+
+<h2>4. Implementation</h2>
+
+<h3>4.1 Stack</h3>
+<p>The app is a single Design Component — one template driven by one logic class, re-rendering on every state change with no page loads and no backend. All data (fleet, trips, translation strings) is defined as in-file constants standing in for what would be live API calls in production.</p>
+
+<h3>4.2 Data model</h3>
+<table>
+<tr><th>Entity</th><th>Shape</th><th>Notes</th></tr>
+<tr><td><code>VEHICLES</code></td><td>id, name, category, badge, seats, bags, gear, fuel, daily rate, <code>units[]</code>, included items</td><td>Each vehicle has several physical <code>units</code> (one per licence plate), each with a <code>busyUntil</code> day index</td></tr>
+<tr><td><code>trips[]</code> (state)</td><td>ref, stage (0–4), vehicle, plate, date range, location, driver</td><td>Stage maps to the status timeline; negative day indices represent past trips</td></tr>
+<tr><td><code>ADDONS</code>, <code>PAY</code>, <code>APPROVERS</code>, <code>LOCS</code></td><td>Static reference lists</td><td>Rendered via <code>&lt;sc-for&gt;</code> into booking-step options</td></tr>
+</table>
+<p>Availability is computed, not stored: <code>freeUnits(vehicle)</code> filters a vehicle's units to those whose <code>busyUntil</code> falls before the selected pickup date; <code>nextFreeIdx(vehicle)</code> finds the earliest date every unit is free, used for the "next free" label when nothing matches the current dates.</p>
+
+<h3>4.3 State &amp; rendering</h3>
+<p>Component state covers auth step, active tab, search dates/location, the open detail/booking sheet, booking-form answers, and UI ephemera (toasts, cancel-sheet target). A single <code>renderVals()</code> method recomputes, on every render: the active translation table, every inline style string used by the template, derived labels (date ranges, cost breakdowns, VAT, deposit), and the click handlers passed to buttons. The template consumes these as named holes and <code>&lt;sc-if&gt;</code>/<code>&lt;sc-for&gt;</code> blocks — no logic lives in the markup itself.</p>
+
+<h3>4.4 Booking flow</h3>
+<p>A 5-step sheet, tracked as <code>state.step</code>:</p>
+<ol>
+<li><strong>Dates &amp; vehicle</strong> — recap of the search and the assigned plate.</li>
+<li><strong>Driver &amp; extras</strong> — chauffeur vs self-drive, toggled add-ons.</li>
+<li><strong>Billing &amp; approver</strong> — who's billed, and (for corporate/agency accounts) which named approver the request routes to.</li>
+<li><strong>Payment</strong> — method selection and the resulting deposit requirement.</li>
+<li><strong>Review &amp; submit</strong> — full cost breakdown, VAT, total; submit can fail and offer a WhatsApp fallback.</li>
+<li><strong>Done</strong> — confirmation screen with a generated reference number, worded differently for "sent to BV" vs "sent for approval."</li>
+</ol>
+<p>Required fields block the primary button (and explain why) until filled; agency/business accounts add the approver step and PO/cost-centre fields that individual accounts skip.</p>
+
+<h3>4.5 Tweaks (prototype controls)</h3>
+<table>
+<tr><th>Tweak</th><th>Effect</th></tr>
+<tr><td>Language</td><td>English / Arabic — flips the whole app's copy, direction and font</td></tr>
+<tr><td>Account type</td><td>UN &amp; INGO / Business / Individual — changes account identity, payment options and whether an approver step exists</td></tr>
+<tr><td>Network</td><td>Online / Offline — shows the offline banner over cached data</td></tr>
+<tr><td>Currency &amp; SDG rate</td><td>Display prices in USD or SDG at an adjustable exchange rate</td></tr>
+<tr><td>Show notes</td><td>Toggles the "what changed" panel beside the device frame</td></tr>
+</table>
+
+<h3>4.6 Known limitations</h3>
+<ul>
+<li>No real backend — availability, pricing and trip status are local mock data, not live.</li>
+<li>Vehicle imagery is a placeholder pattern pending real photography.</li>
+<li>No BV-side dispatch app or live driver map yet — driver contact is a static number, not a live position.</li>
+<li>Arabic copy has not had a native-speaker review pass before release.</li>
+</ul>
+
+</doc-page>
+
+</x-dc>
+</body>
+</html>

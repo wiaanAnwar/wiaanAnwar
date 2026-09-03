@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#0B0B0C;font-family:Poppins,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#F5B301;text-decoration:none}a:hover{color:#DD2A26}
+*{box-sizing:border-box}
+::-webkit-scrollbar{width:0;height:0}
+input::placeholder,textarea::placeholder{color:#9B9B9F}
+@keyframes bvpulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes bvrise{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes bvspin{to{transform:rotate(360deg)}}
+@keyframes bvshim{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+</style></helmet>
+
+<div style="display:flex;gap:56px;padding:56px 64px 80px;align-items:flex-start;min-height:100vh;background-color:#0B0B0C;background-image:radial-gradient(1.2px 1.2px at 12% 22%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 78% 14%,rgba(160,190,255,.45),transparent),radial-gradient(1px 1px at 34% 58%,rgba(255,255,255,.35),transparent),radial-gradient(1.4px 1.4px at 88% 72%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 58% 88%,rgba(160,190,255,.4),transparent),radial-gradient(1px 1px at 6% 82%,rgba(255,255,255,.28),transparent)">
+
+<sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+<div style="width:370px;flex:none;display:flex;flex-direction:column;gap:22px;padding-top:8px">
+  <div>
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span style="font:700 30px/1 Poppins,sans-serif;color:#F5B301;letter-spacing:-.02em">BV</span>
+      <span style="font:600 12px/1 Poppins,sans-serif;color:#fff;letter-spacing:.22em">BAVARIAN</span>
+    </div>
+    <h1 style="margin:16px 0 0;font:700 30px/1.12 Poppins,sans-serif;letter-spacing:-.025em;color:#fff">Rent A Car<br><span style="color:#F5B301">v2 — hardened</span></h1>
+    <div style="height:3px;width:76px;margin:16px 0 0;background:linear-gradient(90deg,#DD2A26,#F5B301)"></div>
+  </div>
+
+  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:18px">
+    <div style="font:600 10px Poppins,sans-serif;letter-spacing:.18em;color:#DD2A26;margin-bottom:12px">WHAT CHANGED</div>
+    <ul style="margin:0;padding-left:18px;font:300 12.5px/1.75 Poppins,sans-serif;color:#A8A8AC">
+      <li><span style="color:#fff">Date-first.</span> A two-month calendar drives everything; the fleet only shows what is genuinely free for those dates, with a "next free" date on the rest.</li>
+      <li><span style="color:#fff">Sign-in and approvals.</span> Phone + OTP gate, and corporate/agency requests route through a named approver before they reach BV.</li>
+      <li><span style="color:#fff">Payment.</span> Invoice, Bankak, mobile money or cash on collection, with VAT and a 25% deposit where it applies.</li>
+      <li><span style="color:#fff">Trips do things.</span> Live status timeline, call and WhatsApp the driver, amend, cancel with the policy shown.</li>
+      <li><span style="color:#fff">Arabic and RTL</span> across the whole app — switch it in Tweaks or from Account.</li>
+      <li><span style="color:#fff">Real states.</span> Search skeletons, an offline banner, submit failure with a WhatsApp fallback. Set the Network tweak to Offline to see them.</li>
+      <li><span style="color:#fff">Fixes.</span> Sequential references, admin-set SDG rate, per-plate vehicle instances, 44px hit targets, higher-contrast greys.</li>
+    </ul>
+  </div>
+
+  <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:18px">
+    <div style="font:600 10px Poppins,sans-serif;letter-spacing:.18em;color:#DD2A26;margin-bottom:12px">STILL OPEN</div>
+    <div style="font:300 12.5px/1.75 Poppins,sans-serif;color:#A8A8AC">Real vehicle photography · the BV-side dispatch app · a live map for tracking · Arabic copy review by a native speaker before release.</div>
+  </div>
+</div>
+</sc-if>
+
+<div style="flex:none">
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+
+<div dir="{{ dir }}" style="{{ shellStyle }}">
+
+  <sc-if value="{{ notAuthed }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;inset:0;z-index:8;background-color:#0B0B0C;background-image:radial-gradient(1.3px 1.3px at 18% 16%,rgba(255,255,255,.55),transparent),radial-gradient(1px 1px at 74% 26%,rgba(160,190,255,.5),transparent),radial-gradient(1px 1px at 40% 62%,rgba(255,255,255,.4),transparent),radial-gradient(1.3px 1.3px at 86% 74%,rgba(255,255,255,.32),transparent),radial-gradient(1px 1px at 24% 88%,rgba(160,190,255,.4),transparent);display:flex;flex-direction:column;padding:0 22px 40px">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div style="text-align:center">
+        <div style="font:700 40px/.95 Poppins,sans-serif;color:#F5B301;letter-spacing:-.03em">BV</div>
+        <div style="font:600 11px/1 Poppins,sans-serif;color:#fff;letter-spacing:.28em;margin-top:6px">BAVARIAN</div>
+      </div>
+      <div style="height:3px;width:64px;margin:26px auto 0;background:linear-gradient(90deg,#DD2A26,#F5B301)"></div>
+      <div style="text-align:center;margin-top:26px">
+        <div style="{{ authTitleStyle }}">{{ t.signIn }}</div>
+        <div style="{{ authSubStyle }}">{{ t.signInSub }}</div>
+      </div>
+
+      <sc-if value="{{ authPhoneStep }}">
+      <div style="margin-top:26px">
+        <div style="{{ labelDarkStyle }}">{{ t.phone }}</div>
+        <input value="{{ phoneValue }}" onChange="{{ onPhone }}" placeholder="09xx xxx xxx" style="{{ authInputStyle }}">
+        <button onClick="{{ sendCode }}" style="{{ authPrimaryStyle }}">{{ t.sendCode }}</button>
+        <button onClick="{{ guestMode }}" style="{{ authGhostStyle }}">{{ t.guest }}</button>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ authCodeStep }}">
+      <div style="margin-top:26px">
+        <div style="{{ labelDarkStyle }}">{{ t.enterCode }}</div>
+        <input value="{{ codeValue }}" onChange="{{ onCode }}" placeholder="0000" style="{{ authCodeInputStyle }}">
+        <div style="font:300 11.5px Poppins,sans-serif;color:#B4B4B8;text-align:center;margin-top:10px">{{ codeSentLine }}</div>
+        <button onClick="{{ verifyCode }}" style="{{ authPrimaryStyle }}">{{ t.verify }}</button>
+        <button onClick="{{ backToPhone }}" style="{{ authGhostStyle }}">{{ t.changeNumber }}</button>
+      </div>
+      </sc-if>
+    </div>
+    <div style="text-align:center;font:300 10.5px/1.7 Poppins,sans-serif;color:#8E8E93">{{ t.authFooter }}</div>
+  </div>
+  </sc-if>
+
+  <div style="flex:none;background-color:#0B0B0C;background-image:radial-gradient(1px 1px at 14% 60%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 62% 34%,rgba(160,190,255,.45),transparent),radial-gradient(1.2px 1.2px at 86% 74%,rgba(255,255,255,.35),transparent)">
+    <div style="padding:54px 16px 12px;display:flex;align-items:center;gap:12px">
+      <div style="text-align:center">
+        <div style="font:700 21px/.95 Poppins,sans-serif;color:#F5B301;letter-spacing:-.02em">BV</div>
+        <div style="font:600 7.5px/1 Poppins,sans-serif;color:#fff;letter-spacing:.2em;margin-top:2px">BAVARIAN</div>
+      </div>
+      <div style="width:1px;height:26px;background:rgba(255,255,255,.16)"></div>
+      <div style="flex:1;min-width:0">
+        <div style="{{ headerNameStyle }}">{{ accountName }}</div>
+        <div style="{{ headerSubStyle }}">{{ accountTypeLabel }}</div>
+      </div>
+      <button onClick="{{ toggleLang }}" style="flex:none;border:1px solid rgba(255,255,255,.22);border-radius:100px;background:transparent;color:#fff;font:600 11px Poppins,sans-serif;min-width:46px;height:44px;padding:0 10px;cursor:pointer" style-hover="border-color:#F5B301;color:#F5B301">{{ langSwitch }}</button>
+      <button onClick="{{ callBV }}" style="flex:none;border:0;border-radius:100px;background:#F5B301;color:#131315;font:600 11.5px Poppins,sans-serif;height:44px;padding:0 15px;cursor:pointer" style-hover="background:#DD2A26;color:#fff">{{ t.callNow }}</button>
+    </div>
+    <div style="height:3px;background:linear-gradient(90deg,#DD2A26,#F5B301)"></div>
+  </div>
+
+  <sc-if value="{{ offline }}">
+  <div style="flex:none;background:#DD2A26;padding:9px 16px;display:flex;align-items:center;gap:9px">
+    <div style="width:6px;height:6px;border-radius:100px;background:#fff;animation:bvpulse 1.6s ease-in-out infinite;flex:none"></div>
+    <div style="font:500 11.5px Poppins,sans-serif;color:#fff;flex:1">{{ t.offline }}</div>
+    <div style="font:300 10.5px Poppins,sans-serif;color:rgba(255,255,255,.8)">{{ t.offlineSub }}</div>
+  </div>
+  </sc-if>
+
+  <div style="flex:1;overflow-y:auto;overflow-x:hidden">
+
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <sc-if value="{{ showHero }}">
+      <div style="background-color:#0B0B0C;background-image:radial-gradient(1.2px 1.2px at 18% 18%,rgba(255,255,255,.55),transparent),radial-gradient(1px 1px at 74% 26%,rgba(160,190,255,.5),transparent),radial-gradient(1px 1px at 40% 62%,rgba(255,255,255,.4),transparent),radial-gradient(1.3px 1.3px at 88% 70%,rgba(255,255,255,.32),transparent);padding:22px 16px 24px;position:relative">
+        <button onClick="{{ dismissHero }}" style="position:absolute;top:12px;{{ heroCloseSide }}:12px;width:44px;height:44px;border:0;background:transparent;color:#8E8E93;font:300 18px Poppins,sans-serif;cursor:pointer">×</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font:400 11px Poppins,sans-serif;color:#F5B301;letter-spacing:.06em">★★★★★</span>
+          <span style="{{ eyebrowWhiteStyle }}">{{ t.premium }}</span>
+        </div>
+        <div style="{{ heroTitleStyle }}"><span style="color:#F5B301">BV</span> <span style="color:#fff">Bavarian</span><br><span style="color:#fff">Rent A Car</span></div>
+        <div style="display:flex;gap:9px;margin-top:12px;align-items:flex-start">
+          <div style="width:3px;align-self:stretch;background:#DD2A26;flex:none;border-radius:2px"></div>
+          <div style="{{ heroSubStyle }}">{{ t.tagline }}</div>
+        </div>
+        <div style="display:flex;gap:20px;margin-top:20px;align-items:center">
+          <div>
+            <div style="font:700 19px/1 Poppins,sans-serif;color:#fff">50+</div>
+            <div style="{{ statLabelStyle }}">{{ t.statCars }}</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,.16)"></div>
+          <div>
+            <div style="font:700 19px/1 Poppins,sans-serif;color:#fff">24/7</div>
+            <div style="{{ statLabelStyle }}">{{ t.statSupport }}</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,.16)"></div>
+          <div>
+            <div style="font:700 19px/1 Poppins,sans-serif;color:#fff">10+</div>
+            <div style="{{ statLabelStyle }}">{{ t.statYears }}</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <div style="padding:18px 16px 26px;display:flex;flex-direction:column;gap:22px">
+
+        <div style="background:#0B0B0C;border-radius:12px;padding:16px">
+          <div style="{{ eyebrowGoldStyle }}">{{ t.findRide }}</div>
+          <div style="display:flex;gap:9px;margin-top:13px">
+            <button onClick="{{ openSearch }}" style="{{ searchFieldStyle }}">
+              <div style="{{ searchLabelStyle }}">{{ t.pickupDate }}</div>
+              <div style="{{ searchValueStyle }}">{{ startLabel }}</div>
+            </button>
+            <button onClick="{{ openSearch }}" style="{{ searchFieldStyle }}">
+              <div style="{{ searchLabelStyle }}">{{ t.returnDate }}</div>
+              <div style="{{ searchValueStyle }}">{{ endLabel }}</div>
+            </button>
+          </div>
+          <button onClick="{{ openSearch }}" style="{{ searchWideStyle }}">
+            <div style="{{ searchLabelStyle }}">{{ t.location }}</div>
+            <div style="{{ searchValueStyle }}">{{ locationLabel }}</div>
+          </button>
+          <button onClick="{{ runSearch }}" style="{{ searchCtaStyle }}">{{ t.findVehicles }}</button>
+          <div style="font:300 10.5px Poppins,sans-serif;color:#9B9B9F;text-align:center;margin-top:9px">{{ nightsLine }}</div>
+        </div>
+
+        <sc-if value="{{ hasActiveHire }}">
+        <div style="background:#1A1A1C;border-radius:12px;padding:16px;color:#fff">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:13px">
+            <div style="width:6px;height:6px;border-radius:100px;background:#F5B301;animation:bvpulse 2s ease-in-out infinite"></div>
+            <div style="{{ eyebrowGoldStyle }}">{{ t.onHire }}</div>
+            <div style="flex:1"></div>
+            <div style="font:400 10.5px Poppins,sans-serif;color:#9B9B9F">{{ activeRef }}</div>
+          </div>
+          <div style="font:600 18px/1.2 Poppins,sans-serif;letter-spacing:-.02em">{{ activeVehicle }}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap">
+            <span style="font:500 10.5px Poppins,sans-serif;color:#fff;background:rgba(255,255,255,.12);padding:4px 8px;border-radius:4px;letter-spacing:.04em">{{ activePlate }}</span>
+            <span style="font:300 11.5px Poppins,sans-serif;color:#B4B4B8">{{ activeMeta }}</span>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.1);margin:14px 0"></div>
+          <div style="display:flex;gap:14px">
+            <div style="flex:1">
+              <div style="{{ microLabelDarkStyle }}">{{ t.driver }}</div>
+              <div style="font:400 12.5px Poppins,sans-serif">Osman Bashir</div>
+            </div>
+            <div style="flex:1">
+              <div style="{{ microLabelDarkStyle }}">{{ t.returns }}</div>
+              <div style="font:400 12.5px Poppins,sans-serif">{{ activeReturns }}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button onClick="{{ openTrips }}" style="{{ darkPrimaryBtnStyle }}">{{ t.track }}</button>
+            <button onClick="{{ callDriver }}" style="{{ darkGhostBtnStyle }}">{{ t.callDriver }}</button>
+          </div>
+        </div>
+        </sc-if>
+
+        <div>
+          <div style="text-align:center;margin-bottom:14px">
+            <div style="{{ eyebrowRedStyle }}">{{ t.ourServices }}</div>
+            <div style="{{ sectionTitleStyle }}">{{ t.whatWeProvide }}</div>
+            <div style="width:52px;height:2px;background:#F5B301;margin:9px auto 0"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <sc-for list="{{ services }}" as="sv" hint-placeholder-count="4">
+              <button onClick="{{ sv.go }}" style="{{ serviceTileStyle }}">
+                <div style="width:34px;height:34px;border-radius:8px;background:#1A1A1C;display:flex;align-items:center;justify-content:center;font:600 14px Poppins,sans-serif;color:#F5B301;margin-bottom:11px">{{ sv.mark }}</div>
+                <div style="{{ serviceTitleStyle }}">{{ sv.title }}</div>
+                <div style="{{ serviceSubStyle }}">{{ sv.sub }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#1A1A1C;border-radius:12px;padding:16px">
+          <div style="{{ eyebrowGoldStyle }}">{{ t.accountThisMonth }}</div>
+          <div style="display:flex;margin-top:13px">
+            <div style="flex:1">
+              <div style="font:700 19px Poppins,sans-serif;color:#fff;letter-spacing:-.02em">{{ openRequests }}</div>
+              <div style="{{ statSubStyle }}">{{ t.openRequests }}</div>
+            </div>
+            <div style="flex:1.2">
+              <div style="font:700 19px Poppins,sans-serif;color:#fff;letter-spacing:-.02em">{{ monthSpend }}</div>
+              <div style="{{ statSubStyle }}">{{ t.committed }}</div>
+            </div>
+            <div style="flex:1.1">
+              <div style="font:500 12.5px Poppins,sans-serif;color:#F5B301;padding-top:4px">{{ contractRef }}</div>
+              <div style="{{ statSubStyle }}">{{ t.agreement }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isFleet }}">
+    <div style="padding:16px 0 26px">
+      <div style="padding:0 16px">
+        <button onClick="{{ openSearch }}" style="{{ searchSummaryStyle }}">
+          <div style="flex:1;text-align:start">
+            <div style="font:600 13px Poppins,sans-serif;color:#131315">{{ rangeLabel }}</div>
+            <div style="font:300 11px Poppins,sans-serif;color:#5E5E62;margin-top:3px">{{ locationLabel }} · {{ nightsLine }}</div>
+          </div>
+          <span style="font:600 11.5px Poppins,sans-serif;color:#DD2A26">{{ t.change }}</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:7px;overflow-x:auto;padding:14px 16px 14px">
+        <sc-for list="{{ filters }}" as="f" hint-placeholder-count="7">
+          <button onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ searching }}">
+      <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:12px;display:flex;gap:12px;animation:bvshim 1.2s ease-in-out infinite">
+            <div style="width:104px;height:78px;border-radius:8px;background:#E8E8E8;flex:none"></div>
+            <div style="flex:1;padding-top:4px">
+              <div style="height:13px;width:70%;border-radius:4px;background:#E8E8E8"></div>
+              <div style="height:10px;width:50%;border-radius:4px;background:#EFEFEF;margin-top:10px"></div>
+              <div style="height:10px;width:38%;border-radius:4px;background:#EFEFEF;margin-top:8px"></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ showResults }}">
+      <div style="padding:0 16px">
+        <div style="font:300 11.5px Poppins,sans-serif;color:#5E5E62;margin-bottom:12px">{{ resultsLine }}</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ fleet }}" as="v" hint-placeholder-count="5">
+            <div style="{{ v.cardStyle }}">
+              <div style="display:flex;gap:12px;padding:12px">
+                <div onClick="{{ v.open }}" style="width:104px;height:78px;flex:none;border-radius:8px;background:repeating-linear-gradient(135deg,#EDEDED 0 9px,#E3E3E3 9px 18px);position:relative;cursor:pointer;overflow:hidden">
+                  <span style="position:absolute;bottom:5px;left:5px;right:5px;font:400 7.5px Poppins,sans-serif;letter-spacing:.08em;color:#8A8A8E;text-align:center">{{ v.photoLabel }}</span>
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:flex-start;gap:8px">
+                    <div onClick="{{ v.open }}" style="font:600 14.5px/1.25 Poppins,sans-serif;letter-spacing:-.02em;cursor:pointer;flex:1">{{ v.name }}</div>
+                    <span style="font:600 8.5px Poppins,sans-serif;color:#131315;background:#F5B301;padding:4px 8px;border-radius:100px;flex:none;white-space:nowrap">{{ v.badge }}</span>
+                  </div>
+                  <div style="font:300 11px Poppins,sans-serif;color:#5E5E62;margin-top:6px">{{ v.specLine }}</div>
+                  <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
+                    <div style="{{ v.dotStyle }}"></div>
+                    <span style="{{ v.availStyle }}">{{ v.availability }}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:0 12px 12px">
+                <div style="flex:1;display:flex;align-items:baseline;gap:3px">
+                  <span style="font:700 18px Poppins,sans-serif;letter-spacing:-.025em">{{ v.rateShort }}</span>
+                  <span style="font:300 10.5px Poppins,sans-serif;color:#5E5E62">{{ t.perDay }}</span>
+                  <span style="font:300 10.5px Poppins,sans-serif;color:#9B9B9F">· {{ v.totalLine }}</span>
+                </div>
+                <button onClick="{{ v.rent }}" style="{{ v.ctaStyle }}">{{ v.ctaLabel }}</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ fleetEmpty }}">
+          <div style="border:1px dashed #D6D6D6;border-radius:10px;padding:30px 20px;text-align:center;background:#fff">
+            <div style="font:600 14px Poppins,sans-serif">{{ t.noResults }}</div>
+            <div style="font:300 12px/1.6 Poppins,sans-serif;color:#5E5E62;margin-top:6px">{{ t.noResultsSub }}</div>
+            <button onClick="{{ openSearch }}" style="{{ redBtnStyle }}">{{ t.changeDates }}</button>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isTrips }}">
+    <div style="padding:18px 16px 26px">
+      <div style="{{ eyebrowRedStyle }}">{{ t.yourBookings }}</div>
+      <div style="{{ pageTitleStyle }}">{{ t.trips }}</div>
+      <div style="width:56px;height:2px;background:#F5B301;margin:10px 0 16px"></div>
+      <div style="display:flex;background:#EAEAEA;border-radius:8px;padding:3px;margin-bottom:16px">
+        <sc-for list="{{ tripTabs }}" as="tt" hint-placeholder-count="3">
+          <button onClick="{{ tt.pick }}" style="{{ tt.style }}">{{ tt.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ visibleTrips }}" as="tr" hint-placeholder-count="2">
+          <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:15px;box-shadow:0 2px 10px rgba(0,0,0,.04)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:11px">
+              <span style="{{ tr.badgeStyle }}">{{ tr.statusLabel }}</span>
+              <div style="flex:1"></div>
+              <span style="font:400 10.5px Poppins,sans-serif;color:#5E5E62">{{ tr.ref }}</span>
+            </div>
+            <div style="font:600 16px/1.25 Poppins,sans-serif;letter-spacing:-.02em">{{ tr.vehicle }}</div>
+            <div style="font:300 11.5px Poppins,sans-serif;color:#5E5E62;margin-top:5px">{{ tr.dates }} · {{ tr.pickup }}</div>
+
+            <div style="display:flex;margin:14px 0 4px">
+              <sc-for list="{{ tr.steps }}" as="st" hint-placeholder-count="5">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative">
+                  <div style="{{ st.lineStyle }}"></div>
+                  <div style="{{ st.dotStyle }}"></div>
+                  <div style="{{ st.labelStyle }}">{{ st.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ tr.hasDriver }}">
+            <div style="display:flex;align-items:center;gap:10px;background:#F7F7F7;border-radius:9px;padding:10px 12px;margin-top:14px">
+              <div style="width:34px;height:34px;border-radius:100px;background:#1A1A1C;color:#F5B301;display:flex;align-items:center;justify-content:center;font:600 12px Poppins,sans-serif;flex:none">{{ tr.driverInitials }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font:500 12.5px Poppins,sans-serif">{{ tr.driverName }}</div>
+                <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:2px">{{ tr.plate }}</div>
+              </div>
+              <button onClick="{{ tr.call }}" style="{{ callBtnStyle }}">✆ {{ t.callWord }}</button>
+              <button onClick="{{ tr.whatsapp }}" style="{{ whatsappIconBtnStyle }}">◈ {{ t.waWord }}</button>
+            </div>
+            </sc-if>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <sc-for list="{{ tr.actions }}" as="ac" hint-placeholder-count="3">
+                <button onClick="{{ ac.go }}" style="{{ ac.style }}">{{ ac.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ tripsEmpty }}">
+          <div style="border:1px dashed #D6D6D6;border-radius:10px;padding:32px 20px;text-align:center;background:#fff">
+            <div style="font:600 14px Poppins,sans-serif">{{ t.nothingHere }}</div>
+            <div style="font:300 12px/1.6 Poppins,sans-serif;color:#5E5E62;margin-top:6px">{{ t.nothingHereSub }}</div>
+            <button onClick="{{ goFleetTab }}" style="{{ redBtnStyle }}">{{ t.viewFleet }}</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isAccount }}">
+    <div style="background-color:#0B0B0C;background-image:radial-gradient(1.2px 1.2px at 16% 12%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 72% 30%,rgba(160,190,255,.45),transparent),radial-gradient(1px 1px at 34% 56%,rgba(255,255,255,.35),transparent),radial-gradient(1.3px 1.3px at 84% 78%,rgba(255,255,255,.3),transparent);min-height:100%;padding:18px 16px 26px">
+      <div style="{{ eyebrowGoldStyle }}">BV BAVARIAN</div>
+      <div style="{{ pageTitleDarkStyle }}">{{ t.account }}</div>
+      <div style="width:56px;height:2px;background:#DD2A26;margin:10px 0 16px"></div>
+
+      <div style="background:#1A1A1C;border-radius:12px;padding:16px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:46px;height:46px;border-radius:9px;background:#F5B301;display:flex;align-items:center;justify-content:center;font:700 14px Poppins,sans-serif;color:#131315;flex:none">{{ accountInitials }}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font:600 15px/1.25 Poppins,sans-serif;color:#fff;letter-spacing:-.02em">{{ accountName }}</div>
+            <div style="font:300 11px Poppins,sans-serif;color:#B4B4B8;margin-top:3px">{{ accountTypeLabel }}</div>
+          </div>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,.1);margin:14px 0"></div>
+        <div style="display:flex">
+          <div style="flex:1">
+            <div style="font:500 12.5px Poppins,sans-serif;color:#F5B301">{{ contractRef }}</div>
+            <div style="{{ statSubStyle }}">{{ t.agreement }}</div>
+          </div>
+          <div style="flex:1">
+            <div style="font:500 12.5px Poppins,sans-serif;color:#fff">31 Dec 2026</div>
+            <div style="{{ statSubStyle }}">{{ t.validUntil }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#1A1A1C;border-radius:12px;margin-top:12px;overflow:hidden">
+        <sc-for list="{{ accountRows }}" as="r" hint-placeholder-count="7">
+          <button onClick="{{ r.go }}" style="width:100%;text-align:start;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;min-height:56px;padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:Poppins,sans-serif" style-hover="background:rgba(255,255,255,.05)">
+            <div style="flex:1">
+              <div style="font:500 13px Poppins,sans-serif;color:#fff">{{ r.title }}</div>
+              <div style="font:300 11px Poppins,sans-serif;color:#B4B4B8;margin-top:3px">{{ r.sub }}</div>
+            </div>
+            <span style="font:400 13px Poppins,sans-serif;color:#F5B301">{{ r.trail }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="margin-top:20px">
+        <div style="font:600 14px Poppins,sans-serif;color:#fff">{{ t.businessHours }}</div>
+        <div style="display:flex;margin-top:12px">
+          <div style="flex:1;font:300 12px Poppins,sans-serif;color:#B4B4B8">{{ t.satThu }}</div>
+          <div style="font:400 12px Poppins,sans-serif;color:#fff">8:00 – 18:00</div>
+        </div>
+        <div style="display:flex;margin-top:7px">
+          <div style="flex:1;font:300 12px Poppins,sans-serif;color:#B4B4B8">{{ t.friday }}</div>
+          <div style="font:500 12px Poppins,sans-serif;color:#FF6B67">{{ t.closed }}</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,.1);padding-top:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="width:16px;flex:none;text-align:center;font:400 12px Poppins,sans-serif;color:#FF6B67">◉</div>
+          <div style="font:300 11.5px/1.6 Poppins,sans-serif;color:#B4B4B8">Khartoum (2) Victoria ST (almolazim abdelgader mohamed abas st) 43 House (6) Back Off Canar Building</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="width:16px;flex:none;text-align:center;font:400 12px Poppins,sans-serif;color:#FF6B67">✆</div>
+          <div style="font:500 11.5px/1.6 Poppins,sans-serif;color:#fff" dir="ltr">0912301407<br>0188460022</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="width:16px;flex:none;text-align:center;font:400 12px Poppins,sans-serif;color:#FF6B67">✉</div>
+          <div style="font:300 11.5px Poppins,sans-serif;color:#B4B4B8" dir="ltr">mickey5m1@gmail.com</div>
+        </div>
+      </div>
+
+      <button onClick="{{ signOut }}" style="width:100%;min-height:48px;margin-top:20px;border:1px solid rgba(255,255,255,.18);border-radius:8px;background:transparent;color:#fff;font:600 12.5px Poppins,sans-serif;cursor:pointer" style-hover="border-color:#DD2A26;color:#FF6B67">{{ t.signOut }}</button>
+      <div style="text-align:center;font:300 10px Poppins,sans-serif;color:#8E8E93;margin-top:16px">© 2026 BV Bavarian Rent A Car · v2.0.0</div>
+    </div>
+    </sc-if>
+
+  </div>
+
+  <div style="flex:none;background:#0B0B0C;display:flex;padding-bottom:26px;border-top:1px solid rgba(255,255,255,.08)">
+    <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="4">
+      <button onClick="{{ tb.pick }}" style="{{ tb.style }}">
+        <div style="{{ tb.barStyle }}"></div>
+        <div style="{{ tb.dotStyle }}"></div>
+        {{ tb.label }}
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ searchOpen }}">
+  <div style="position:absolute;inset:0;background:#F7F7F7;z-index:6;display:flex;flex-direction:column;animation:bvrise .22s ease-out">
+    <div style="flex:none;background:#0B0B0C;padding:54px 16px 14px;display:flex;align-items:center;gap:11px">
+      <button onClick="{{ closeSearch }}" style="{{ chevBtnDarkStyle }}">{{ chev }}</button>
+      <div style="flex:1">
+        <div style="font:600 14px/1.2 Poppins,sans-serif;color:#fff;letter-spacing:-.02em">{{ t.whenWhere }}</div>
+        <div style="font:300 10.5px Poppins,sans-serif;color:#B4B4B8;margin-top:2px">{{ t.whenWhereSub }}</div>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:16px 16px 20px">
+      <div style="display:flex;gap:9px;margin-bottom:16px">
+        <div style="{{ pickChipStartStyle }}">
+          <div style="{{ pickChipLabelStyle }}">{{ t.pickupDate }}</div>
+          <div style="{{ pickChipValueStyle }}">{{ startLabel }}</div>
+        </div>
+        <div style="{{ pickChipEndStyle }}">
+          <div style="{{ pickChipLabelStyle }}">{{ t.returnDate }}</div>
+          <div style="{{ pickChipValueStyle }}">{{ endLabel }}</div>
+        </div>
+      </div>
+      <sc-for list="{{ months }}" as="mo" hint-placeholder-count="2">
+        <div style="margin-bottom:20px">
+          <div style="font:600 13.5px Poppins,sans-serif;margin-bottom:10px">{{ mo.label }}</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px">
+            <sc-for list="{{ weekdays }}" as="wd" hint-placeholder-count="7">
+              <div style="text-align:center;font:600 9px Poppins,sans-serif;color:#8A8A8E;letter-spacing:.05em">{{ wd }}</div>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+            <sc-for list="{{ mo.cells }}" as="c" hint-placeholder-count="35">
+              <button onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.day }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="{{ eyebrowRedStyle }}">{{ t.location }}</div>
+      <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden;margin-top:10px">
+        <sc-for list="{{ locationOptions }}" as="l" hint-placeholder-count="4">
+          <button onClick="{{ l.pick }}" style="{{ l.style }}">
+            <div style="{{ l.radio }}"></div>
+            <div style="flex:1;text-align:start">
+              <div style="font:500 12.5px Poppins,sans-serif;color:#131315">{{ l.name }}</div>
+              <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:2px">{{ l.sub }}</div>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="flex:none;background:#fff;border-top:1px solid #EAEAEA;padding:12px 16px 34px">
+      <button onClick="{{ applySearch }}" style="{{ redBtnWideStyle }}">{{ applyLabel }}</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ detail }}">
+  <div style="position:absolute;inset:0;background:#F7F7F7;z-index:5;display:flex;flex-direction:column;animation:bvrise .22s ease-out">
+    <div style="flex:1;overflow-y:auto">
+      <div style="height:250px;background:repeating-linear-gradient(135deg,#1F1F21 0 10px,#191919 10px 20px);position:relative;display:flex;align-items:flex-end;padding:14px">
+        <button onClick="{{ closeDetail }}" style="{{ detailBackStyle }}">{{ chev }}</button>
+        <span style="{{ detailBadgeStyle }}">{{ detail.badge }}</span>
+        <span style="font:400 8.5px Poppins,sans-serif;letter-spacing:.1em;color:#9B9B9F;background:rgba(255,255,255,.08);padding:4px 8px;border-radius:3px">{{ detailPhotoLabel }}</span>
+      </div>
+      <div style="padding:18px 16px 24px">
+        <div style="{{ detailTitleStyle }}">{{ detail.name }}</div>
+        <div style="font:300 12px Poppins,sans-serif;color:#5E5E62;margin-top:6px">{{ detail.specLine }}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:10px">
+          <div style="{{ detail.dotStyle }}"></div>
+          <span style="{{ detail.availStyle }}">{{ detail.availability }}</span>
+        </div>
+        <div style="width:48px;height:2px;background:#F5B301;margin:16px 0 0"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#E6E6E6;border:1px solid #E6E6E6;border-radius:10px;overflow:hidden;margin-top:18px">
+          <sc-for list="{{ detailSpecs }}" as="s" hint-placeholder-count="4">
+            <div style="background:#fff;padding:13px 14px">
+              <div style="{{ microLabelLightStyle }}">{{ s.k }}</div>
+              <div style="font:500 13px Poppins,sans-serif">{{ s.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="{{ blockTitleStyle }}">{{ t.included }}</div>
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden">
+          <sc-for list="{{ detailIncluded }}" as="inc" hint-placeholder-count="3">
+            <div style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid #F1F1F1">
+              <div style="width:5px;height:5px;background:#DD2A26;flex:none;transform:rotate(45deg)"></div>
+              <span style="font:300 12.5px Poppins,sans-serif;color:#3E3E42">{{ inc }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="{{ blockTitleStyle }}">{{ t.policies }}</div>
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden">
+          <sc-for list="{{ policies }}" as="p" hint-placeholder-count="4">
+            <div style="display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #F1F1F1;align-items:baseline">
+              <div style="{{ microLabelLightStyle }}">{{ p.k }}</div>
+              <div style="font:300 12px Poppins,sans-serif;color:#131315;flex:1;text-align:end">{{ p.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="flex:none;background:#fff;border-top:1px solid #EAEAEA;padding:12px 16px 34px;display:flex;gap:12px;align-items:center">
+      <div style="flex:none">
+        <div style="{{ microLabelLightStyle }}">{{ t.totalFor }}</div>
+        <div style="display:flex;align-items:baseline;gap:3px;margin-top:3px">
+          <span style="font:700 18px Poppins,sans-serif;letter-spacing:-.025em">{{ detailTotal }}</span>
+        </div>
+      </div>
+      <button onClick="{{ startBooking }}" style="{{ detailCtaStyle }}">{{ detailCtaLabel }}</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ bookingOpen }}">
+  <div style="position:absolute;inset:0;background:#F7F7F7;z-index:6;display:flex;flex-direction:column;animation:bvrise .22s ease-out">
+    <div style="flex:none;background:#0B0B0C;padding:54px 16px 0">
+      <div style="display:flex;align-items:center;gap:11px;padding-bottom:12px">
+        <button onClick="{{ bookBack }}" style="{{ chevBtnDarkStyle }}">{{ chev }}</button>
+        <div style="flex:1">
+          <div style="font:600 14px/1.2 Poppins,sans-serif;color:#fff;letter-spacing:-.02em">{{ stepTitle }}</div>
+          <div style="font:300 10.5px Poppins,sans-serif;color:#B4B4B8;margin-top:2px">{{ stepCaption }}</div>
+        </div>
+        <div style="font:500 10px Poppins,sans-serif;color:#F5B301;letter-spacing:.1em">{{ stepCounter }}</div>
+      </div>
+      <div style="display:flex;gap:4px;padding-bottom:12px">
+        <sc-for list="{{ stepBars }}" as="b" hint-placeholder-count="5">
+          <div style="{{ b.style }}"></div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:18px 16px 22px">
+
+      <sc-if value="{{ step1 }}">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:15px">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="flex:1">
+              <div style="{{ microLabelLightStyle }}">{{ t.pickupDate }}</div>
+              <div style="font:600 15px Poppins,sans-serif;margin-top:4px">{{ startLabel }}</div>
+            </div>
+            <div style="flex:1">
+              <div style="{{ microLabelLightStyle }}">{{ t.returnDate }}</div>
+              <div style="font:600 15px Poppins,sans-serif;margin-top:4px">{{ endLabel }}</div>
+            </div>
+          </div>
+          <div style="height:1px;background:#F1F1F1;margin:13px 0"></div>
+          <div style="{{ microLabelLightStyle }}">{{ t.location }}</div>
+          <div style="font:400 13px Poppins,sans-serif;margin-top:4px">{{ locationLabel }}</div>
+          <button onClick="{{ openSearch }}" style="{{ outlineBtnStyle }}">{{ t.changeDates }}</button>
+        </div>
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:15px">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:76px;height:56px;flex:none;border-radius:7px;background:repeating-linear-gradient(135deg,#EDEDED 0 9px,#E3E3E3 9px 18px)"></div>
+            <div style="flex:1;min-width:0">
+              <div style="font:600 14.5px/1.25 Poppins,sans-serif;letter-spacing:-.02em">{{ bookingVehicleName }}</div>
+              <div style="font:300 11px Poppins,sans-serif;color:#5E5E62;margin-top:4px">{{ bookingVehicleMeta }}</div>
+              <div style="font:500 11px Poppins,sans-serif;color:#DD2A26;margin-top:5px">{{ assignedPlate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ step2 }}">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div>
+          <div style="{{ eyebrowRedStyle }}">{{ t.whoDrives }}</div>
+          <div style="display:flex;gap:9px;margin-top:10px">
+            <sc-for list="{{ driveModes }}" as="m" hint-placeholder-count="2">
+              <button onClick="{{ m.pick }}" style="{{ m.style }}">
+                <div style="font:600 13px Poppins,sans-serif;letter-spacing:-.015em">{{ m.title }}</div>
+                <div style="font:300 10.5px/1.45 Poppins,sans-serif;opacity:.75;margin-top:5px">{{ m.sub }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="{{ eyebrowRedStyle }}">{{ t.addons }}</div>
+          <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden;margin-top:10px">
+            <sc-for list="{{ addons }}" as="a" hint-placeholder-count="4">
+              <button onClick="{{ a.toggle }}" style="width:100%;display:flex;align-items:center;gap:11px;min-height:56px;padding:12px 15px;border:0;border-bottom:1px solid #F1F1F1;background:#fff;cursor:pointer;text-align:start" style-hover="background:#FAFAFA">
+                <div style="flex:1">
+                  <div style="font:500 12.5px Poppins,sans-serif;color:#131315">{{ a.title }}</div>
+                  <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:2px">{{ a.sub }}</div>
+                </div>
+                <div style="{{ a.switchTrack }}"><div style="{{ a.switchKnob }}"></div></div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#1A1A1C;border-radius:10px;padding:14px 15px">
+          <div style="font:300 11.5px/1.65 Poppins,sans-serif;color:#B4B4B8">{{ driverNote }}</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ step3 }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="{{ eyebrowRedStyle }}">{{ t.billTo }}</div>
+          <div style="display:flex;gap:7px;margin-top:10px">
+            <sc-for list="{{ acctModes }}" as="m" hint-placeholder-count="3">
+              <button onClick="{{ m.pick }}" style="{{ m.style }}">{{ m.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-for list="{{ formFields }}" as="fd" hint-placeholder-count="3">
+          <div>
+            <div style="{{ microLabelLightStyle }}">{{ fd.label }}</div>
+            <input value="{{ fd.value }}" onChange="{{ fd.onChange }}" placeholder="{{ fd.placeholder }}" style="{{ fd.style }}">
+            <div style="{{ fd.hintStyle }}">{{ fd.hint }}</div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ needsApproval }}">
+        <div>
+          <div style="{{ eyebrowRedStyle }}">{{ t.approver }}</div>
+          <div style="font:300 11px/1.6 Poppins,sans-serif;color:#5E5E62;margin:7px 0 10px">{{ t.approverSub }}</div>
+          <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden">
+            <sc-for list="{{ approvers }}" as="ap" hint-placeholder-count="3">
+              <button onClick="{{ ap.pick }}" style="{{ ap.style }}">
+                <div style="{{ ap.radio }}"></div>
+                <div style="flex:1;text-align:start">
+                  <div style="font:500 12.5px Poppins,sans-serif;color:#131315">{{ ap.name }}</div>
+                  <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:2px">{{ ap.role }}</div>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ step4 }}">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="{{ eyebrowRedStyle }}">{{ t.payment }}</div>
+          <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden;margin-top:10px">
+            <sc-for list="{{ payMethods }}" as="pm" hint-placeholder-count="4">
+              <button onClick="{{ pm.pick }}" style="{{ pm.style }}">
+                <div style="{{ pm.radio }}"></div>
+                <div style="flex:1;text-align:start">
+                  <div style="font:500 12.5px Poppins,sans-serif;color:#131315">{{ pm.name }}</div>
+                  <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:2px">{{ pm.sub }}</div>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:15px">
+          <div style="display:flex;align-items:baseline">
+            <div style="flex:1;font:500 12.5px Poppins,sans-serif">{{ t.depositDue }}</div>
+            <div style="font:700 16px Poppins,sans-serif;letter-spacing:-.02em">{{ depositLabel }}</div>
+          </div>
+          <div style="font:300 11px/1.6 Poppins,sans-serif;color:#5E5E62;margin-top:8px">{{ depositNote }}</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ step5 }}">
+      <div style="display:flex;flex-direction:column;gap:13px">
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:14px">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:76px;height:56px;flex:none;border-radius:7px;background:repeating-linear-gradient(135deg,#EDEDED 0 9px,#E3E3E3 9px 18px)"></div>
+            <div>
+              <div style="font:600 15px/1.25 Poppins,sans-serif;letter-spacing:-.02em">{{ bookingVehicleName }}</div>
+              <div style="font:300 11px Poppins,sans-serif;color:#5E5E62;margin-top:4px">{{ bookingVehicleMeta }}</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #EAEAEA;border-radius:10px;overflow:hidden">
+          <sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="7">
+            <div style="display:flex;gap:12px;padding:12px 15px;border-bottom:1px solid #F1F1F1;align-items:baseline">
+              <div style="{{ microLabelLightStyle }}">{{ r.k }}</div>
+              <div style="font:300 12px Poppins,sans-serif;color:#131315;flex:1;text-align:end">{{ r.v }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#0B0B0C;border-radius:10px;padding:16px;color:#fff">
+          <sc-for list="{{ costRows }}" as="c" hint-placeholder-count="4">
+            <div style="display:flex;margin-bottom:9px">
+              <div style="flex:1;font:300 12px Poppins,sans-serif;color:#B4B4B8">{{ c.k }}</div>
+              <div style="font:400 12px Poppins,sans-serif">{{ c.v }}</div>
+            </div>
+          </sc-for>
+          <div style="height:1px;background:rgba(255,255,255,.12);margin:12px 0"></div>
+          <div style="display:flex;align-items:baseline">
+            <div style="flex:1;font:600 13px Poppins,sans-serif">{{ t.total }}</div>
+            <div style="font:700 21px Poppins,sans-serif;color:#F5B301;letter-spacing:-.025em">{{ totalLabel }}</div>
+          </div>
+          <div style="font:300 10.5px/1.55 Poppins,sans-serif;color:#B4B4B8;margin-top:9px">{{ totalNote }}</div>
+        </div>
+        <sc-if value="{{ submitFailed }}">
+        <div style="background:#FFF1F0;border:1px solid #F3C6C4;border-radius:10px;padding:14px">
+          <div style="font:600 12.5px Poppins,sans-serif;color:#B41E1A">{{ t.failed }}</div>
+          <div style="font:300 11.5px/1.6 Poppins,sans-serif;color:#8C2521;margin-top:5px">{{ t.failedSub }}</div>
+          <button onClick="{{ whatsappFallback }}" style="{{ whatsappBtnStyle }}">{{ t.whatsappFallback }}</button>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ step6 }}">
+      <div style="padding:30px 6px 0;text-align:center">
+        <div style="width:58px;height:58px;border-radius:100px;background:#F5B301;margin:0 auto;display:flex;align-items:center;justify-content:center;font:400 24px Poppins,sans-serif;color:#131315">✓</div>
+        <div style="{{ doneTitleStyle }}">{{ doneTitle }}</div>
+        <div style="width:52px;height:2px;background:#DD2A26;margin:12px auto 0"></div>
+        <div style="font:300 12.5px/1.7 Poppins,sans-serif;color:#5E5E62;margin-top:14px;text-wrap:pretty">{{ doneBody }}</div>
+        <div style="display:inline-block;white-space:nowrap;font:600 13px Poppins,sans-serif;letter-spacing:.06em;background:#fff;border:1px solid #EAEAEA;border-radius:8px;padding:13px 18px;margin-top:20px" dir="ltr">{{ newRef }}</div>
+        <div style="font:300 10.5px Poppins,sans-serif;color:#5E5E62;margin-top:10px">{{ t.refNumber }}</div>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <div style="flex:none;background:#fff;border-top:1px solid #EAEAEA;padding:12px 16px 34px">
+      <button onClick="{{ bookNext }}" style="{{ primaryStyle }}">
+        <sc-if value="{{ submitting }}">
+          <span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:100px;animation:bvspin .7s linear infinite;vertical-align:-2px;margin-inline-end:9px"></span>
+        </sc-if>
+        {{ primaryLabel }}
+      </button>
+      <sc-if value="{{ showBlocked }}">
+        <div style="font:400 11px Poppins,sans-serif;color:#C41F1B;text-align:center;margin-top:9px">{{ blockedMessage }}</div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ cancelTarget }}">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:7;display:flex;align-items:flex-end">
+    <div style="width:100%;background:#fff;border-radius:16px 16px 0 0;padding:22px 18px 34px;animation:bvrise .2s ease-out">
+      <div style="font:700 18px Poppins,sans-serif;letter-spacing:-.025em">{{ t.cancelTitle }}</div>
+      <div style="font:300 12.5px/1.7 Poppins,sans-serif;color:#5E5E62;margin-top:8px">{{ cancelBody }}</div>
+      <div style="background:#F7F7F7;border-radius:9px;padding:12px 14px;margin-top:14px">
+        <div style="{{ microLabelLightStyle }}">{{ t.cancellation }}</div>
+        <div style="font:300 11.5px/1.6 Poppins,sans-serif;color:#3E3E42;margin-top:5px">{{ t.cancelPolicy }}</div>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:16px">
+        <button onClick="{{ dismissCancel }}" style="{{ outlineWideBtnStyle }}">{{ t.keepBooking }}</button>
+        <button onClick="{{ confirmCancel }}" style="{{ redBtnWideStyle }}">{{ t.confirmCancel }}</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}">
+  <div style="{{ toastStyle }}">{{ toast }}</div>
+  </sc-if>
+
+</div>
+
+</x-import>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:1020},&quot;language&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;English&quot;,&quot;العربية&quot;],&quot;default&quot;:&quot;English&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;accountType&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;UN &amp; INGO&quot;,&quot;Business&quot;,&quot;Individual&quot;],&quot;default&quot;:&quot;Business&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;network&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Online&quot;,&quot;Offline&quot;],&quot;default&quot;:&quot;Online&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;USD&quot;,&quot;SDG&quot;],&quot;default&quot;:&quot;USD&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;sdgRate&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2600,&quot;min&quot;:500,&quot;max&quot;:6000,&quot;step&quot;:50,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;firstLaunch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+const VEHICLES = [
+  { id:'prado', name:'Toyota Land Cruiser Prado', cat:'SUV', badge:'SUV / Luxury', seats:7, bags:4, gear:'Auto', fuel:'Diesel', rate:150,
+    units:[{plate:'KRT 4471',busyUntil:14},{plate:'KRT 5120',busyUntil:0},{plate:'KRT 6033',busyUntil:0},{plate:'KRT 7781',busyUntil:24}],
+    inc:['Comprehensive insurance','Unlimited mileage','24/7 roadside assistance','Airport delivery available'] },
+  { id:'voleex', name:'Great Wall Voleex C30', cat:'Sedan', badge:'Sedan / Economy', seats:5, bags:2, gear:'Manual', fuel:'Petrol', rate:45,
+    units:[{plate:'KRT 2210',busyUntil:0},{plate:'KRT 2311',busyUntil:0},{plate:'KRT 2415',busyUntil:0},{plate:'KRT 2588',busyUntil:11},{plate:'KRT 2604',busyUntil:0},{plate:'KRT 2790',busyUntil:0}],
+    inc:['Comprehensive insurance','Unlimited mileage','City driving package'] },
+  { id:'hilux', name:'Toyota Hilux', cat:'Truck', badge:'Truck / Utility', seats:5, bags:10, gear:'Manual', fuel:'Diesel', rate:90,
+    units:[{plate:'KRT 8801',busyUntil:0},{plate:'KRT 8834',busyUntil:0},{plate:'KRT 8902',busyUntil:19},{plate:'KRT 9010',busyUntil:0},{plate:'KRT 9155',busyUntil:0}],
+    inc:['Comprehensive insurance','Unlimited mileage','Load securing kit','Off-road ready'] },
+  { id:'limo', name:'Luxury Limousine', cat:'VIP', badge:'VIP', seats:4, bags:3, gear:'Auto', fuel:'Petrol', rate:250,
+    units:[{plate:'KRT 0001',busyUntil:16}],
+    inc:['Professional chauffeur','Comprehensive insurance','Bottled water & refreshments','Wedding decoration on request'] },
+  { id:'lcv8', name:'Toyota Land Cruiser V8', cat:'SUV', badge:'SUV / Executive', seats:7, bags:5, gear:'Auto', fuel:'Petrol', rate:200,
+    units:[{plate:'KRT 3300',busyUntil:0},{plate:'KRT 3412',busyUntil:0},{plate:'KRT 3577',busyUntil:28}],
+    inc:['Comprehensive insurance','Unlimited mileage','24/7 roadside assistance','Airport meet & greet'] },
+  { id:'hiace', name:'Toyota Hiace', cat:'Van', badge:'Van / Group', seats:14, bags:8, gear:'Manual', fuel:'Diesel', rate:120,
+    units:[{plate:'KRT 7010',busyUntil:0},{plate:'KRT 7122',busyUntil:0},{plate:'KRT 7288',busyUntil:0},{plate:'KRT 7301',busyUntil:31}],
+    inc:['Driver included','Comprehensive insurance','A/C throughout'] },
+  { id:'coaster', name:'Toyota Coaster', cat:'Bus', badge:'Bus / Group', seats:30, bags:20, gear:'Manual', fuel:'Diesel', rate:200,
+    units:[{plate:'KRT 5001',busyUntil:0},{plate:'KRT 5140',busyUntil:22}],
+    inc:['Driver included','Comprehensive insurance','Luggage hold','Onboard water'] },
+  { id:'corolla', name:'Toyota Corolla', cat:'Sedan', badge:'Sedan / Comfort', seats:5, bags:3, gear:'Auto', fuel:'Petrol', rate:50,
+    units:[{plate:'KRT 1102',busyUntil:0},{plate:'KRT 1233',busyUntil:0},{plate:'KRT 1390',busyUntil:0},{plate:'KRT 1444',busyUntil:0},{plate:'KRT 1520',busyUntil:0},{plate:'KRT 1666',busyUntil:9},{plate:'KRT 1777',busyUntil:0}],
+    inc:['Comprehensive insurance','Unlimited mileage','Economical city runs'] },
+];
+
+const AR_BADGE = {
+  'SUV / Luxury':'دفع رباعي / فاخرة', 'Sedan / Economy':'سيدان / اقتصادية', 'Truck / Utility':'بيك أب / خدمات',
+  'VIP':'كبار الشخصيات', 'SUV / Executive':'دفع رباعي / تنفيذية', 'Van / Group':'فان / مجموعات',
+  'Bus / Group':'باص / مجموعات', 'Sedan / Comfort':'سيدان / مريحة',
+};
+const AR_GEAR = { Auto:'أوتوماتيك', Manual:'عادي' };
+const AR_FUEL = { Diesel:'ديزل', Petrol:'بنزين' };
+
+const MONTHS = [
+  { key:'sep', days:30, offset:0, lead:3, en:'September 2026', ar:'سبتمبر ٢٠٢٦', enShort:'Sep', arShort:'سبتمبر' },
+  { key:'oct', days:31, offset:30, lead:5, en:'October 2026', ar:'أكتوبر ٢٠٢٦', enShort:'Oct', arShort:'أكتوبر' },
+];
+
+const LOCS = [
+  { en:'BV Khartoum office', ar:'مكتب BV الخرطوم', enSub:'Victoria St · Sat–Thu 8:00–18:00', arSub:'شارع فيكتوريا · السبت–الخميس ٨:٠٠–١٨:٠٠' },
+  { en:'Khartoum International Airport', ar:'مطار الخرطوم الدولي', enSub:'Driver meets you on arrival', arSub:'السائق في انتظارك عند الوصول' },
+  { en:'Delivered to your address', ar:'التوصيل إلى عنوانك', enSub:'Within Khartoum · surcharge applies', arSub:'داخل الخرطوم · رسوم إضافية' },
+  { en:'Bahri branch', ar:'فرع بحري', enSub:'By arrangement · 24h notice', arSub:'بالترتيب المسبق · إشعار ٢٤ ساعة' },
+];
+
+const ADDONS = [
+  { id:'meet', en:'Airport meet & greet', ar:'استقبال في المطار', enSub:'Driver waits with a name board', arSub:'السائق ينتظرك بلافتة الاسم', price:25, unit:'once' },
+  { id:'decor', en:'Wedding decoration', ar:'تزيين الأعراس', enSub:'Flowers and ribbon on the vehicle', arSub:'ورود وشرائط على السيارة', price:60, unit:'once' },
+  { id:'child', en:'Child seat', ar:'مقعد أطفال', enSub:'Fitted and checked before pickup', arSub:'يُركّب ويُفحص قبل الاستلام', price:6, unit:'day' },
+  { id:'fuel', en:'Full-tank fuel card', ar:'بطاقة وقود', enSub:'Reconciled when you return the car', arSub:'تُحتسب عند إعادة السيارة', price:15, unit:'day' },
+];
+
+const APPROVERS = [
+  { en:'Mohamed Elhassan', ar:'محمد الحسن', enRole:'Operations Manager · approves to $5,000', arRole:'مدير العمليات · يعتمد حتى ٥٠٠٠ دولار' },
+  { en:'Sara Abdelrahman', ar:'سارة عبد الرحمن', enRole:'Finance Focal Point · approves any amount', arRole:'المسؤول المالي · يعتمد أي مبلغ' },
+  { en:'Tarig Ibrahim', ar:'طارق إبراهيم', enRole:'Logistics Officer · approves to $1,500', arRole:'مسؤول اللوجستيات · يعتمد حتى ١٥٠٠ دولار' },
+];
+
+const PAY = [
+  { id:'invoice', en:'Invoice to account', ar:'فاتورة على الحساب', enSub:'30-day terms on your agreement', arSub:'٣٠ يوماً حسب الاتفاقية', orgOnly:true },
+  { id:'bankak', en:'Bankak transfer', ar:'تحويل بنكك', enSub:'Transfer before pickup', arSub:'التحويل قبل الاستلام' },
+  { id:'mbok', en:'mBOK / mobile money', ar:'أم بوك / محفظة إلكترونية', enSub:'Instant confirmation', arSub:'تأكيد فوري' },
+  { id:'cash', en:'Cash on collection', ar:'نقداً عند الاستلام', enSub:'Deposit required at the office', arSub:'مطلوب عربون في المكتب' },
+];
+
+const STAGES = ['requested','approved','confirmed','onhire','closed'];
+
+const STR = {
+  en: {
+    signIn:'Sign in', signInSub:'Book, track and manage your hires', phone:'Mobile number', sendCode:'Send code',
+    enterCode:'Verification code', verify:'Verify and continue', guest:'Continue as guest', changeNumber:'Change number',
+    authFooter:'By continuing you accept BV\u2019s rental terms and privacy policy.',
+    callNow:'Call Now', premium:'PREMIUM CAR RENTAL', tagline:'Suit all your needs & exceed every expectation.',
+    statCars:'PREMIUM CARS', statSupport:'SUPPORT', statYears:'YEARS',
+    findRide:'FIND YOUR RIDE', pickupDate:'PICKUP', returnDate:'RETURN', location:'LOCATION', findVehicles:'Find Vehicles',
+    onHire:'ON HIRE NOW', driver:'DRIVER', returns:'RETURNS', track:'Track', callDriver:'Call driver', callWord:'Call', waWord:'WhatsApp',
+    ourServices:'OUR SERVICES', whatWeProvide:'What We Provide',
+    accountThisMonth:'YOUR ACCOUNT THIS MONTH', openRequests:'Open requests', committed:'Committed spend', agreement:'Agreement', validUntil:'Valid until',
+    change:'Change', perDay:'/day', noResults:'Nothing free for those dates', noResultsSub:'Try a shorter hire, a different category, or move the pickup date.',
+    changeDates:'Change dates', viewFleet:'View Fleet \u203A', available:'available', lastOne:'Last one for these dates', unavailable:'Booked out', nextFree:'Next free',
+    yourBookings:'YOUR BOOKINGS', trips:'Trips', tActive:'Active', tUpcoming:'Upcoming', tPast:'Past',
+    nothingHere:'Nothing here yet', nothingHereSub:'Requests you send will sit here while BV confirms the vehicle.',
+    account:'Account', businessHours:'Business Hours', satThu:'Saturday – Thursday', friday:'Friday', closed:'Closed', signOut:'Sign out',
+    whenWhere:'When and where', whenWhereSub:'Pick your dates, then the collection point', apply:'Apply',
+    included:'Included', policies:'Policies', cancellation:'Cancellation', fuelPolicy:'Fuel', mileage:'Mileage', depositPolicy:'Deposit', totalFor:'TOTAL',
+    rentNow:'Rent Now', notifyMe:'Notify me',
+    whoDrives:'WHO DRIVES', chauffeur:'BV chauffeur', selfDrive:'Self-drive', addons:'EXTRAS', billTo:'BILL THIS HIRE TO',
+    approver:'SEND TO APPROVER', approverSub:'Corporate and agency hires need internal sign-off before BV sees them.',
+    payment:'HOW YOU PAY', depositDue:'Deposit due at pickup', total:'Estimated total', refNumber:'Reference number',
+    subtotal:'Subtotal', vat:'VAT (17%)', chauffeurLine:'Chauffeur', extrasLine:'Extras',
+    sendRequest:'Send Booking Request', sendForApproval:'Send for Approval', continue:'Continue', viewInTrips:'View in Trips',
+    requestSent:'Request sent', sentForApproval:'Sent for approval',
+    requestSentBody:'BV has your request and will confirm the vehicle and price within 2 working hours. You\u2019ll get a push and an email.',
+    approvalBody:'Your approver has been notified. Once they sign off, the request goes straight to BV dispatch.',
+    offline:'You are offline', offlineSub:'Showing saved data',
+    failed:'Couldn\u2019t reach BV', failedSub:'Your connection dropped. Nothing was lost — retry, or send this request over WhatsApp instead.',
+    whatsappFallback:'Send over WhatsApp', retry:'Retry',
+    cancelTitle:'Cancel this booking?', keepBooking:'Keep it', confirmCancel:'Cancel booking',
+    cancelPolicy:'Free until 24 hours before pickup. After that, one day\u2019s rate is charged.',
+    amend:'Amend', cancel:'Cancel', documents:'Documents',
+    stRequested:'Requested', stApproved:'Approved', stConfirmed:'Confirmed', stOnHire:'On hire', stClosed:'Closed', stCancelled:'Cancelled',
+    stAwaitApproval:'Awaiting approval', stAwaitBV:'Awaiting BV',
+    fullName:'FULL NAME', company:'COMPANY NAME', org:'ORGANISATION / AGENCY', costCentre:'COST CENTRE', projectCode:'PROJECT / WBS CODE',
+    poRef:'PO REFERENCE', poRefOpt:'PO REFERENCE (OPTIONAL)', mobile:'MOBILE NUMBER',
+    required:'Required before BV can take this booking.',
+    weekdays:['SA','SU','MO','TU','WE','TH','FR'],
+    nav:['HOME','FLEET','TRIPS','ACCOUNT'],
+    acctTypes:['UN & INGO','Business','Individual'],
+  },
+  ar: {
+    signIn:'تسجيل الدخول', signInSub:'احجز وتابع وأدر إيجاراتك', phone:'رقم الهاتف', sendCode:'إرسال الرمز',
+    enterCode:'رمز التحقق', verify:'تحقق ومتابعة', guest:'المتابعة كزائر', changeNumber:'تغيير الرقم',
+    authFooter:'بالمتابعة فإنك توافق على شروط الإيجار وسياسة الخصوصية.',
+    callNow:'اتصل', premium:'تأجير سيارات فاخرة', tagline:'نلبي كل احتياجاتك ونتجاوز توقعاتك.',
+    statCars:'سيارة فاخرة', statSupport:'دعم', statYears:'سنوات',
+    findRide:'ابحث عن سيارتك', pickupDate:'الاستلام', returnDate:'الإرجاع', location:'الموقع', findVehicles:'ابحث عن السيارات',
+    onHire:'قيد الإيجار الآن', driver:'السائق', returns:'الإرجاع', track:'تتبع', callDriver:'اتصل بالسائق', callWord:'اتصال', waWord:'واتساب',
+    ourServices:'خدماتنا', whatWeProvide:'ما نقدمه',
+    accountThisMonth:'حسابك هذا الشهر', openRequests:'طلبات مفتوحة', committed:'الإنفاق الملتزم', agreement:'الاتفاقية', validUntil:'سارية حتى',
+    change:'تغيير', perDay:'/يوم', noResults:'لا توجد سيارات في هذه التواريخ', noResultsSub:'جرّب مدة أقصر أو فئة أخرى أو غيّر تاريخ الاستلام.',
+    changeDates:'تغيير التواريخ', viewFleet:'عرض الأسطول', available:'متاحة', lastOne:'الأخيرة في هذه التواريخ', unavailable:'محجوزة بالكامل', nextFree:'أقرب توفر',
+    yourBookings:'حجوزاتك', trips:'الرحلات', tActive:'جارية', tUpcoming:'قادمة', tPast:'سابقة',
+    nothingHere:'لا يوجد شيء بعد', nothingHereSub:'ستظهر طلباتك هنا ريثما تؤكد BV السيارة.',
+    account:'الحساب', businessHours:'ساعات العمل', satThu:'السبت – الخميس', friday:'الجمعة', closed:'مغلق', signOut:'تسجيل الخروج',
+    whenWhere:'متى وأين', whenWhereSub:'اختر التواريخ ثم نقطة الاستلام', apply:'تطبيق',
+    included:'يشمل', policies:'السياسات', cancellation:'الإلغاء', fuelPolicy:'الوقود', mileage:'المسافة', depositPolicy:'العربون', totalFor:'الإجمالي',
+    rentNow:'احجز الآن', notifyMe:'أبلغني عند التوفر',
+    whoDrives:'من يقود', chauffeur:'سائق BV', selfDrive:'قيادة ذاتية', addons:'إضافات', billTo:'الفوترة على',
+    approver:'إرسال للاعتماد', approverSub:'حجوزات الشركات والمنظمات تحتاج اعتماداً داخلياً قبل وصولها إلى BV.',
+    payment:'طريقة الدفع', depositDue:'العربون عند الاستلام', total:'الإجمالي التقديري', refNumber:'الرقم المرجعي',
+    subtotal:'المجموع الفرعي', vat:'ضريبة القيمة المضافة (١٧٪)', chauffeurLine:'السائق', extrasLine:'الإضافات',
+    sendRequest:'إرسال طلب الحجز', sendForApproval:'إرسال للاعتماد', continue:'متابعة', viewInTrips:'عرض في الرحلات',
+    requestSent:'تم إرسال الطلب', sentForApproval:'أُرسل للاعتماد',
+    requestSentBody:'وصل طلبك إلى BV وسيتم تأكيد السيارة والسعر خلال ساعتي عمل. ستصلك رسالة وبريد إلكتروني.',
+    approvalBody:'تم إشعار المعتمِد. بمجرد الموافقة يصل الطلب مباشرة إلى قسم الحركة في BV.',
+    offline:'أنت غير متصل', offlineSub:'عرض البيانات المحفوظة',
+    failed:'تعذّر الوصول إلى BV', failedSub:'انقطع الاتصال ولم يضع شيء. أعد المحاولة أو أرسل الطلب عبر واتساب.',
+    whatsappFallback:'الإرسال عبر واتساب', retry:'إعادة المحاولة',
+    cancelTitle:'إلغاء هذا الحجز؟', keepBooking:'الاحتفاظ به', confirmCancel:'إلغاء الحجز',
+    cancelPolicy:'مجاناً حتى ٢٤ ساعة قبل الاستلام، وبعدها تُحتسب أجرة يوم واحد.',
+    amend:'تعديل', cancel:'إلغاء', documents:'المستندات',
+    stRequested:'مطلوب', stApproved:'معتمد', stConfirmed:'مؤكد', stOnHire:'قيد الإيجار', stClosed:'منتهٍ', stCancelled:'ملغى',
+    stAwaitApproval:'بانتظار الاعتماد', stAwaitBV:'بانتظار BV',
+    fullName:'الاسم الكامل', company:'اسم الشركة', org:'المنظمة / الوكالة', costCentre:'مركز التكلفة', projectCode:'رمز المشروع',
+    poRef:'رقم أمر الشراء', poRefOpt:'رقم أمر الشراء (اختياري)', mobile:'رقم الهاتف',
+    required:'مطلوب قبل أن تتمكن BV من قبول الحجز.',
+    weekdays:['سب','أح','إث','ثل','أر','خم','جم'],
+    nav:['الرئيسية','الأسطول','الرحلات','الحساب'],
+    acctTypes:['أمم ومنظمات','شركات','أفراد'],
+  },
+};
+
+class Component extends DCLogic {
+  state = {
+    authed:false, authStep:'phone', phone:'', code:'',
+    lang:null, tab:'home', tripTab:'active', fleetFilter:'All',
+    heroSeen:false, searchOpen:false, searching:false, searched:true,
+    startIdx:12, endIdx:19, locIdx:0, pickPhase:'start',
+    detailId:null, booking:false, step:1,
+    driver:true, addons:{ meet:true, decor:false, child:false, fuel:false },
+    org:'', code2:'', po:'', touched:false, approverIdx:0, payId:null,
+    acctMode:null, submitting:false, submitFailed:false, newRef:null, seq:444,
+    cancelTarget:null, toast:null,
+    trips:[
+      { ref:'BV-26-0418', stage:3, vehicle:'Toyota Land Cruiser Prado', plate:'KRT 4471', from:7, to:14, locIdx:0, driverName:'Osman Bashir', group:'active' },
+      { ref:'BV-26-0431', stage:0, vehicle:'Toyota Hiace', plate:'—', from:22, to:26, locIdx:1, driverName:null, group:'upcoming' },
+      { ref:'BV-26-0402', stage:2, vehicle:'Toyota Hilux', plate:'KRT 8902', from:31, to:42, locIdx:0, driverName:null, group:'upcoming' },
+      { ref:'BV-26-0377', stage:4, vehicle:'Toyota Land Cruiser V8', plate:'KRT 3577', from:-26, to:-11, locIdx:0, driverName:'Yousif Ali', group:'past' },
+    ],
+  };
+
+  toast(msg) { clearTimeout(this._t); this.setState({ toast:msg }); this._t = setTimeout(() => this.setState({ toast:null }), 2800); }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._s); clearTimeout(this._q); }
+
+  lang() { return this.state.lang || (this.props.language === 'العربية' ? 'ar' : 'en'); }
+  acct() { return this.state.acctMode || this.props.accountType || 'Business'; }
+  vehicle() { return VEHICLES.find(v => v.id === this.state.detailId); }
+  offline() { return (this.props.network || 'Online') === 'Offline'; }
+
+  dateLabel(i, lang) {
+    if (i <= 0) return lang === 'ar' ? 'أغسطس' : 'Aug';
+    const m = i <= 30 ? MONTHS[0] : MONTHS[1];
+    const d = i <= 30 ? i : i - 30;
+    return d + ' ' + (lang === 'ar' ? m.arShort : m.enShort);
+  }
+  freeUnits(v) { return v.units.filter(u => u.busyUntil < this.state.startIdx); }
+  nextFreeIdx(v) { return Math.min.apply(null, v.units.map(u => u.busyUntil)) + 1; }
+
+  render_() {}
+
+  renderVals() {
+    const s = this.state, P = this.props;
+    const lang = this.lang();
+    const t = STR[lang];
+    const rtl = lang === 'ar';
+    const fam = rtl ? 'Cairo,Poppins,sans-serif' : 'Poppins,sans-serif';
+    const showNotes = P.showNotes ?? true;
+    const mode = this.acct();
+    const isOrg = mode === 'UN & INGO' || mode === 'Business';
+    const isAgency = mode === 'UN & INGO';
+    const days = Math.max(1, s.endIdx - s.startIdx);
+    const offline = this.offline();
+
+    const accountName = isAgency ? (rtl ? 'المفوضية — عمليات السودان' : 'UNHCR — Sudan Operation') : mode === 'Business' ? (rtl ? 'شركة النيل الأزرق التجارية' : 'Blue Nile Trading Co.') : (rtl ? 'آمنة إدريس' : 'Amna Idris');
+    const accountInitials = isAgency ? 'UN' : mode === 'Business' ? 'BN' : 'AI';
+    const contractRef = isAgency ? 'BV-UNHCR-24' : mode === 'Business' ? 'BV-BNT-22' : (rtl ? 'دفع مباشر' : 'PAY AS YOU GO');
+    const accountTypeLabel = isAgency ? (rtl ? 'عميل اتفاقية إطارية' : 'UN & INGO framework client') : mode === 'Business' ? (rtl ? 'حساب شركات' : 'Corporate account') : (rtl ? 'عميل فرد' : 'Individual customer');
+
+    const rate = P.sdgRate ?? 2600;
+    const currency = P.currency ?? 'USD';
+    const cash = n => currency === 'SDG' ? Math.round(n * rate).toLocaleString('en-US') + (rtl ? ' ج.س' : ' SDG') : '$' + Math.round(n).toLocaleString('en-US');
+
+    const go = tab => () => this.setState({ tab, detailId:null, booking:false, searchOpen:false });
+    const startLabel = this.dateLabel(s.startIdx, lang);
+    const endLabel = this.dateLabel(s.endIdx, lang);
+    const rangeLabel = startLabel + ' → ' + endLabel;
+    const loc = LOCS[s.locIdx];
+    const locationLabel = rtl ? loc.ar : loc.en;
+    const nightsLine = days + ' ' + (rtl ? 'يوم' : days === 1 ? 'day' : 'days');
+
+    // ── shared style strings ────────────────────────────────
+    const eyebrowRedStyle = 'font:600 9.5px ' + fam + ';color:#C41F1B;letter-spacing:' + (rtl ? '0' : '.18em');
+    const eyebrowGoldStyle = 'font:600 9.5px ' + fam + ';color:#F5B301;letter-spacing:' + (rtl ? '0' : '.18em');
+    const eyebrowWhiteStyle = 'font:600 9.5px ' + fam + ';color:#fff;letter-spacing:' + (rtl ? '0' : '.18em');
+    const microLabelLightStyle = 'font:600 8.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.16em') + ';color:#6E6E72;width:92px;flex:none;margin-bottom:4px';
+    const microLabelDarkStyle = 'font:600 8.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.16em') + ';color:#9B9B9F;margin-bottom:5px';
+    const statSubStyle = 'font:300 11px ' + fam + ';color:#B4B4B8;margin-top:3px';
+    const statLabelStyle = 'font:500 8.5px ' + fam + ';color:#B4B4B8;letter-spacing:' + (rtl ? '0' : '.14em') + ';margin-top:5px';
+    const redBtnStyle = 'margin-top:16px;border:0;border-radius:7px;background:#DD2A26;color:#fff;font:600 12.5px ' + fam + ';min-height:44px;padding:0 20px;cursor:pointer';
+    const redBtnWideStyle = 'flex:1;width:100%;border:0;border-radius:7px;background:#DD2A26;color:#fff;font:600 13.5px ' + fam + ';min-height:48px;cursor:pointer';
+    const outlineWideBtnStyle = 'flex:1;border:1px solid #D8D8DA;border-radius:7px;background:#fff;color:#131315;font:600 13.5px ' + fam + ';min-height:48px;cursor:pointer';
+    const outlineBtnStyle = 'width:100%;margin-top:13px;border:1px solid #D8D8DA;border-radius:7px;background:#fff;color:#131315;font:600 12.5px ' + fam + ';min-height:44px;cursor:pointer';
+    const chev = rtl ? '›' : '‹';
+    const chevBtnDarkStyle = 'width:44px;height:44px;border-radius:100px;border:1px solid rgba(255,255,255,.22);background:transparent;cursor:pointer;font:400 15px ' + fam + ';color:#fff;flex:none';
+    const radioOn = on => 'width:18px;height:18px;flex:none;border-radius:100px;border:' + (on ? '5px solid #DD2A26' : '1.5px solid #C4C4C8');
+    const rowBtn = on => 'width:100%;display:flex;align-items:center;gap:11px;min-height:56px;padding:12px 15px;border:0;border-bottom:1px solid #F1F1F1;background:' + (on ? '#FFFBF0' : '#fff') + ';cursor:pointer';
+
+    // ── calendar ────────────────────────────────────────────
+    const months = MONTHS.map(m => {
+      const cells = [];
+      for (let i = 0; i < m.lead; i++) cells.push({ day:'', style:'height:40px;border:0;background:transparent;pointer-events:none' });
+      for (let d = 1; d <= m.days; d++) {
+        const idx = m.offset + d;
+        const isStart = idx === s.startIdx, isEnd = idx === s.endIdx;
+        const inRange = idx > s.startIdx && idx < s.endIdx;
+        const past = idx < 8;
+        let bg = 'transparent', col = past ? '#C4C4C8' : '#131315', bold = '400';
+        if (inRange) { bg = '#FDECEB'; col = '#B41E1A'; }
+        if (isStart || isEnd) { bg = '#DD2A26'; col = '#fff'; bold = '600'; }
+        cells.push({
+          day:d,
+          style:'height:40px;min-width:40px;border:0;border-radius:8px;cursor:' + (past ? 'default' : 'pointer') + ';font:' + bold + ' 12.5px ' + fam + ';color:' + col + ';background:' + bg + ';' + (past ? 'pointer-events:none' : ''),
+          pick: () => {
+            if (s.pickPhase === 'start' || idx <= s.startIdx) this.setState({ startIdx:idx, endIdx:Math.max(idx + 1, Math.min(idx + days, 61)), pickPhase:'end' });
+            else this.setState({ endIdx:idx, pickPhase:'start' });
+          },
+        });
+      }
+      return { label: rtl ? m.ar : m.en, cells };
+    });
+
+    // ── fleet ───────────────────────────────────────────────
+    const vRow = v => {
+      const free = this.freeUnits(v).length;
+      const out = free === 0;
+      const nf = this.nextFreeIdx(v);
+      const subtotal = v.rate * days;
+      return {
+        ...v,
+        specLine: v.seats + (rtl ? ' مقاعد · ' : ' seats · ') + v.bags + (rtl ? ' حقائب · ' : ' bags · ') + v.gear,
+        rateShort: cash(v.rate),
+        totalLine: cash(subtotal) + ' · ' + nightsLine,
+        photoLabel: v.name.toUpperCase(),
+        availability: out ? t.unavailable + ' · ' + t.nextFree + ' ' + this.dateLabel(nf, lang) : free === 1 ? t.lastOne : free + ' ' + t.available,
+        availStyle: 'font:300 10.5px ' + fam + ';color:' + (out ? '#B41E1A' : '#5E5E62'),
+        dotStyle: 'width:6px;height:6px;border-radius:100px;flex:none;background:' + (out ? '#DD2A26' : free === 1 ? '#F5B301' : '#188A4E'),
+        cardStyle: 'background:#fff;border:1px solid #EAEAEA;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);' + (out ? 'opacity:.72' : ''),
+        ctaLabel: out ? t.notifyMe : t.rentNow,
+        ctaStyle: 'border:0;border-radius:7px;min-height:44px;padding:0 18px;cursor:pointer;font:600 12.5px ' + fam + ';' + (out ? 'background:#EDEDED;color:#5E5E62' : 'background:#DD2A26;color:#fff'),
+        open: () => this.setState({ detailId:v.id }),
+        rent: out ? () => this.toast(rtl ? 'سنبلغك عند توفر ' + v.name : 'We\u2019ll notify you when the ' + v.name + ' frees up') : () => this.setState({ detailId:v.id, booking:true, step:1, touched:false }),
+      };
+    };
+    const filterNames = ['All','SUV','Sedan','Truck','VIP','Van','Bus'];
+    const filterLabels = { All: rtl ? 'الكل' : 'All', SUV:'SUV', Sedan: rtl ? 'سيدان' : 'Sedan', Truck: rtl ? 'بيك أب' : 'Truck', VIP:'VIP', Van: rtl ? 'فان' : 'Van', Bus: rtl ? 'باص' : 'Bus' };
+    const fleet = VEHICLES.filter(v => s.fleetFilter === 'All' || v.cat === s.fleetFilter)
+      .sort((a,b) => (this.freeUnits(b).length > 0) - (this.freeUnits(a).length > 0))
+      .map(vRow);
+
+    // ── trips ───────────────────────────────────────────────
+    const stageLabels = [t.stRequested, t.stApproved, t.stConfirmed, t.stOnHire, t.stClosed];
+    const statusFor = tr => tr.cancelled ? t.stCancelled : tr.stage === 0 ? (tr.needsApproval ? t.stAwaitApproval : t.stAwaitBV) : stageLabels[tr.stage];
+    const badgeFor = tr => {
+      const c = tr.cancelled ? ['#5E5E62','#EDEDED'] : tr.stage === 3 ? ['#fff','#188A4E'] : tr.stage === 0 ? ['#131315','#F5B301'] : tr.stage === 4 ? ['#5E5E62','#EDEDED'] : ['#fff','#DD2A26'];
+      return 'font:600 9.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.12em') + ';text-transform:uppercase;color:' + c[0] + ';background:' + c[1] + ';padding:6px 10px;border-radius:100px';
+    };
+    const visibleTrips = s.trips.filter(tr => tr.group === s.tripTab).map(tr => ({
+      ...tr,
+      statusLabel: statusFor(tr),
+      badgeStyle: badgeFor(tr),
+      dates: this.dateLabel(tr.from, lang) + ' → ' + this.dateLabel(tr.to, lang),
+      pickup: rtl ? LOCS[tr.locIdx].ar : LOCS[tr.locIdx].en,
+      steps: STAGES.map((sg, i) => {
+        const done = !tr.cancelled && i <= tr.stage;
+        const cur = !tr.cancelled && i === tr.stage;
+        return {
+          label: stageLabels[i],
+          lineStyle: 'position:absolute;top:5px;height:2px;width:100%;' + (rtl ? 'right:50%' : 'left:50%') + ';background:' + (i < tr.stage && !tr.cancelled ? '#DD2A26' : '#E4E4E4') + ';' + (i === 4 ? 'display:none' : ''),
+          dotStyle: 'width:12px;height:12px;border-radius:100px;z-index:1;background:' + (cur ? '#F5B301' : done ? '#DD2A26' : '#fff') + ';border:2px solid ' + (done ? (cur ? '#F5B301' : '#DD2A26') : '#DADADA'),
+          labelStyle: 'font:' + (cur ? '600' : '300') + ' 8.5px ' + fam + ';color:' + (cur ? '#131315' : done ? '#5E5E62' : '#9B9B9F') + ';text-align:center;line-height:1.25',
+        };
+      }),
+      hasDriver: !!tr.driverName,
+      driverInitials: tr.driverName ? tr.driverName.split(' ').map(w => w[0]).join('') : '',
+      call: () => this.toast((rtl ? 'اتصال بـ ' : 'Calling ') + tr.driverName + ' · 0912301407'),
+      whatsapp: () => this.toast(rtl ? 'فتح واتساب مع السائق' : 'Opening WhatsApp with the driver'),
+      actions: [
+        { label:t.documents, go: () => this.toast(rtl ? 'العقد والفاتورة بصيغة PDF' : 'Contract and invoice open as PDFs'),
+          style:'flex:1;border:1px solid #D8D8DA;border-radius:7px;background:#fff;color:#131315;font:600 11.5px ' + fam + ';min-height:44px;cursor:pointer' },
+      ].concat(tr.stage >= 4 || tr.cancelled ? [] : [
+        { label:t.amend, go: () => { this.setState({ startIdx:tr.from > 0 ? tr.from : s.startIdx, endIdx:tr.to > 0 ? tr.to : s.endIdx, searchOpen:true }); },
+          style:'flex:1;border:1px solid #D8D8DA;border-radius:7px;background:#fff;color:#131315;font:600 11.5px ' + fam + ';min-height:44px;cursor:pointer' },
+        { label:t.cancel, go: () => this.setState({ cancelTarget:tr.ref }),
+          style:'flex:1;border:1px solid #F0C9C7;border-radius:7px;background:#fff;color:#C41F1B;font:600 11.5px ' + fam + ';min-height:44px;cursor:pointer' },
+      ]),
+    }));
+
+    // ── booking maths ───────────────────────────────────────
+    const bv = this.vehicle() || VEHICLES[0];
+    const unit = this.freeUnits(bv)[0] || bv.units[0];
+    const base = bv.rate * days;
+    const driverFee = s.driver ? 40 * days : 0;
+    const extras = ADDONS.reduce((a, x) => s.addons[x.id] ? a + (x.unit === 'day' ? x.price * days : x.price) : a, 0);
+    const sub = base + driverFee + extras;
+    const vat = Math.round(sub * 0.17);
+    const total = sub + vat;
+    const payId = s.payId || (isOrg ? 'invoice' : 'bankak');
+    const deposit = payId === 'invoice' ? 0 : Math.round(total * 0.25);
+    const needsApproval = isOrg;
+
+    const fields = mode === 'Individual'
+      ? [{ key:'org', label:t.fullName, ph: rtl ? 'كما في الرخصة' : 'As shown on your licence', hint: rtl ? 'أحضر الرخصة والهوية عند الاستلام.' : 'Bring your licence and ID to pickup.' },
+         { key:'code2', label:t.mobile, ph:'09xx xxx xxx', hint: rtl ? 'تتصل BV بهذا الرقم للتأكيد.' : 'BV calls this number to confirm.' }]
+      : mode === 'Business'
+      ? [{ key:'org', label:t.company, ph: rtl ? 'الاسم التجاري المسجل' : 'Registered trading name', hint: rtl ? 'يجب أن يطابق الاسم في الحساب.' : 'Must match the name on the account.' },
+         { key:'code2', label:t.costCentre, ph:'OPS-LOG-04', hint: rtl ? 'يظهر في بند الفاتورة.' : 'Appears on the invoice line.' },
+         { key:'po', label:t.poRefOpt, ph:'PO-88412', hint: rtl ? 'أضفه إذا طلبته إدارة المالية.' : 'Add one if your finance team requires it.' }]
+      : [{ key:'org', label:t.org, ph:'UNHCR — Sudan Operation', hint: rtl ? 'تُفوتر على الاتفاقية الإطارية.' : 'Billed to your framework agreement.' },
+         { key:'code2', label:t.projectCode, ph:'SDN-24-KRT-118', hint: rtl ? 'مطلوب لكل حجوزات المنظمات.' : 'Required for all agency hires.' },
+         { key:'po', label:t.poRef, ph:'PO-2026-4417', hint: rtl ? 'يُدرج في الفاتورة المرسلة للمالية.' : 'Quoted on the invoice raised to finance.' }];
+    const missing = ['org','code2'].filter(k => !String(s[k]).trim());
+    const blocked = s.step === 3 && missing.length > 0;
+
+    const stepTitles = [
+      rtl ? 'التواريخ والموقع' : 'Dates and location',
+      rtl ? 'السائق والإضافات' : 'Driver and extras',
+      rtl ? 'جهة الفوترة' : 'Who we bill',
+      rtl ? 'الدفع' : 'Payment',
+      rtl ? 'مراجعة الحجز' : 'Review your booking',
+      rtl ? 'تم' : 'Confirmed',
+    ];
+    const stepCaps = [
+      rangeLabel + ' · ' + locationLabel,
+      rtl ? 'سائق BV أو قيادة ذاتية' : 'Chauffeur or self-drive, plus extras',
+      rtl ? 'البيانات التي تحتاجها BV للفاتورة' : 'Details BV needs to raise the invoice',
+      rtl ? 'كيف تريد الدفع' : 'How you want to settle this hire',
+      rtl ? 'راجع كل شيء قبل الإرسال' : 'Check everything before you send it',
+      bv.name + ' · ' + nightsLine,
+    ];
+
+    const submit = () => {
+      this.setState({ submitting:true, submitFailed:false });
+      clearTimeout(this._s);
+      this._s = setTimeout(() => {
+        if (this.offline()) { this.setState({ submitting:false, submitFailed:true }); return; }
+        const seq = s.seq + 1;
+        const ref = 'BV-26-' + String(seq).padStart(4, '0');
+        this.setState({
+          submitting:false, submitFailed:false, step:6, newRef:ref, seq,
+          trips:[{ ref, stage:0, needsApproval, vehicle:bv.name, plate: s.driver ? unit.plate : '—', from:s.startIdx, to:s.endIdx, locIdx:s.locIdx, driverName: s.driver ? 'Osman Bashir' : null, group:'upcoming' }, ...s.trips],
+        });
+      }, 1300);
+    };
+
+    const bookNext = () => {
+      if (s.submitting) return;
+      if (s.step === 3 && missing.length) { this.setState({ touched:true }); return; }
+      if (s.step === 5) { submit(); return; }
+      if (s.step === 6) { this.setState({ booking:false, step:1, detailId:null, tab:'trips', tripTab:'upcoming' }); return; }
+      this.setState({ step: s.step + 1 });
+    };
+
+    const runSearch = () => {
+      this.setState({ tab:'fleet', searching:true, searched:false, searchOpen:false });
+      clearTimeout(this._q);
+      this._q = setTimeout(() => this.setState({ searching:false, searched:true }), 750);
+    };
+
+    return {
+      t, dir: rtl ? 'rtl' : 'ltr', chev, showNotes,
+      shellStyle: 'position:relative;height:100%;display:flex;flex-direction:column;background:#F7F7F7;font-family:' + fam + ';color:#131315;overflow:hidden;text-align:start',
+      eyebrowRedStyle, eyebrowGoldStyle, eyebrowWhiteStyle, microLabelLightStyle, microLabelDarkStyle,
+      statSubStyle, statLabelStyle, redBtnStyle, redBtnWideStyle, outlineWideBtnStyle, outlineBtnStyle, chevBtnDarkStyle,
+      sectionTitleStyle: 'font:700 19px ' + fam + ';letter-spacing:-.025em;margin-top:6px',
+      pageTitleStyle: 'font:700 22px ' + fam + ';letter-spacing:-.03em;margin-top:6px',
+      pageTitleDarkStyle: 'font:700 22px ' + fam + ';letter-spacing:-.03em;margin-top:6px;color:#fff',
+      blockTitleStyle: 'font:600 14px ' + fam + ';letter-spacing:-.02em;margin:20px 0 10px',
+      heroTitleStyle: 'font:700 29px/1.14 ' + fam + ';letter-spacing:-.03em;margin-top:12px',
+      heroSubStyle: 'font:300 12.5px/1.5 ' + fam + ';color:#B4B4B8',
+      heroCloseSide: rtl ? 'left' : 'right',
+      detailTitleStyle: 'font:700 23px/1.15 ' + fam + ';letter-spacing:-.035em',
+      doneTitleStyle: 'font:700 22px/1.2 ' + fam + ';letter-spacing:-.03em;margin-top:20px',
+      serviceTileStyle: 'text-align:start;border:1px solid #E6E6E6;background:#fff;border-radius:10px;padding:14px;min-height:110px;cursor:pointer;font-family:' + fam,
+      serviceTitleStyle: 'font:600 13px/1.25 ' + fam + ';color:#131315',
+      serviceSubStyle: 'font:300 11px/1.45 ' + fam + ';color:#5E5E62;margin-top:4px',
+      headerNameStyle: 'font:500 12.5px/1.2 ' + fam + ';color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap',
+      headerSubStyle: 'font:300 10.5px/1.3 ' + fam + ';color:#B4B4B8;margin-top:1px',
+      darkPrimaryBtnStyle: 'flex:1;border:0;border-radius:7px;background:#DD2A26;color:#fff;font:600 12.5px ' + fam + ';min-height:44px;cursor:pointer',
+      darkGhostBtnStyle: 'flex:1;border:1px solid rgba(255,255,255,.22);border-radius:7px;background:transparent;color:#fff;font:600 12.5px ' + fam + ';min-height:44px;cursor:pointer',
+      callBtnStyle: 'height:44px;padding:0 14px;border-radius:100px;border:0;background:#1A1A1C;color:#fff;font:600 11.5px ' + fam + ';cursor:pointer;flex:none',
+      whatsappIconBtnStyle: 'height:44px;padding:0 14px;border-radius:100px;border:0;background:#188A4E;color:#fff;font:600 11.5px ' + fam + ';cursor:pointer;flex:none',
+      whatsappBtnStyle: 'width:100%;margin-top:12px;border:0;border-radius:7px;background:#188A4E;color:#fff;font:600 12.5px ' + fam + ';min-height:44px;cursor:pointer',
+      toastStyle: 'position:absolute;left:16px;right:16px;bottom:104px;z-index:7;background:#1A1A1C;color:#fff;border-inline-start:3px solid #F5B301;border-radius:8px;padding:13px 15px;font:400 12px ' + fam + ';box-shadow:0 10px 28px rgba(0,0,0,.4);animation:bvrise .2s ease-out',
+
+      // auth
+      notAuthed: !s.authed,
+      authPhoneStep: s.authStep === 'phone', authCodeStep: s.authStep === 'code',
+      authTitleStyle: 'font:700 22px ' + fam + ';color:#fff;letter-spacing:-.03em',
+      authSubStyle: 'font:300 12.5px ' + fam + ';color:#B4B4B8;margin-top:7px',
+      labelDarkStyle: 'font:600 9.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.16em') + ';color:#B4B4B8;margin-bottom:9px',
+      authInputStyle: 'width:100%;border-radius:8px;min-height:50px;padding:0 14px;font:400 15px ' + fam + ';color:#fff;background:#1A1A1C;border:1px solid rgba(255,255,255,.14);outline:none',
+      authCodeInputStyle: 'width:100%;border-radius:8px;min-height:56px;padding:0 14px;font:600 24px ' + fam + ';letter-spacing:.5em;text-align:center;color:#fff;background:#1A1A1C;border:1px solid rgba(255,255,255,.14);outline:none',
+      authPrimaryStyle: 'width:100%;margin-top:14px;border:0;border-radius:7px;background:#DD2A26;color:#fff;font:600 14px ' + fam + ';min-height:50px;cursor:pointer',
+      authGhostStyle: 'width:100%;margin-top:10px;border:0;background:transparent;color:#B4B4B8;font:400 12.5px ' + fam + ';min-height:44px;cursor:pointer',
+      phoneValue: s.phone, codeValue: s.code,
+      onPhone: e => this.setState({ phone:e.target.value }),
+      onCode: e => this.setState({ code:e.target.value.slice(0,4) }),
+      sendCode: () => { if (!s.phone.trim()) { this.toast(rtl ? 'أدخل رقم هاتفك' : 'Enter your mobile number'); return; } this.setState({ authStep:'code' }); },
+      codeSentLine: (rtl ? 'أُرسل الرمز إلى ' : 'Code sent to ') + (s.phone || '09xx xxx xxx') + ' · 0000',
+      verifyCode: () => { if (s.code.length < 4) { this.toast(rtl ? 'أدخل الرمز المكوّن من ٤ أرقام' : 'Enter the 4-digit code'); return; } this.setState({ authed:true }); },
+      backToPhone: () => this.setState({ authStep:'phone', code:'' }),
+      guestMode: () => this.setState({ authed:true, acctMode:'Individual' }),
+      signOut: () => this.setState({ authed:false, authStep:'phone', code:'', tab:'home' }),
+
+      offline,
+      accountName, accountInitials, contractRef, accountTypeLabel,
+      langSwitch: rtl ? 'EN' : 'ع',
+      toggleLang: () => this.setState({ lang: rtl ? 'en' : 'ar' }),
+      callBV: () => this.toast(rtl ? 'اتصال بـ BV · 0912301407' : 'Calling BV Bavarian · 0912301407'),
+
+      isHome: s.tab === 'home', isFleet: s.tab === 'fleet', isTrips: s.tab === 'trips', isAccount: s.tab === 'account',
+      showHero: !s.heroSeen && (P.firstLaunch ?? true),
+      dismissHero: () => this.setState({ heroSeen:true }),
+
+      startLabel, endLabel, rangeLabel, locationLabel, nightsLine,
+      searchFieldStyle: 'flex:1;text-align:start;border:1px solid rgba(255,255,255,.14);background:#1A1A1C;border-radius:9px;padding:11px 13px;min-height:56px;cursor:pointer',
+      searchWideStyle: 'width:100%;margin-top:9px;text-align:start;border:1px solid rgba(255,255,255,.14);background:#1A1A1C;border-radius:9px;padding:11px 13px;min-height:56px;cursor:pointer',
+      searchLabelStyle: 'font:600 8.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.16em') + ';color:#9B9B9F',
+      searchValueStyle: 'font:600 14px ' + fam + ';color:#fff;margin-top:5px',
+      searchCtaStyle: 'width:100%;margin-top:12px;border:0;border-radius:7px;background:#DD2A26;color:#fff;font:600 13.5px ' + fam + ';min-height:48px;cursor:pointer',
+      searchSummaryStyle: 'width:100%;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #EAEAEA;border-radius:10px;padding:12px 14px;min-height:56px;cursor:pointer;font-family:' + fam,
+      runSearch, openSearch: () => this.setState({ searchOpen:true, pickPhase:'start' }),
+      closeSearch: () => this.setState({ searchOpen:false }),
+      searchOpen: s.searchOpen,
+      applySearch: () => { this.setState({ searchOpen:false }); if (s.tab !== 'fleet' && !s.booking) runSearch(); },
+      applyLabel: t.apply + ' · ' + rangeLabel,
+      months, weekdays: t.weekdays,
+      pickChipStartStyle: 'flex:1;border-radius:9px;padding:10px 13px;border:1px solid ' + (s.pickPhase === 'start' ? '#DD2A26' : '#EAEAEA') + ';background:#fff',
+      pickChipEndStyle: 'flex:1;border-radius:9px;padding:10px 13px;border:1px solid ' + (s.pickPhase === 'end' ? '#DD2A26' : '#EAEAEA') + ';background:#fff',
+      pickChipLabelStyle: 'font:600 8.5px ' + fam + ';letter-spacing:' + (rtl ? '0' : '.16em') + ';color:#6E6E72',
+      pickChipValueStyle: 'font:600 14px ' + fam + ';margin-top:4px',
+
+      hasActiveHire: s.trips.some(tr => tr.group === 'active'),
+      activeRef:'BV-26-0418', activeVehicle:'Toyota Land Cruiser Prado', activePlate:'KRT 4471',
+      activeMeta: rtl ? '٧ مقاعد · أوتوماتيك' : '7 seats · Auto · SUV',
+      activeReturns: this.dateLabel(14, lang),
+      openTrips: () => { this.setState({ tab:'trips', tripTab:'active' }); this.toast(rtl ? 'الموقع الحالي: شارع أفريقيا، ٦ كم' : 'Live position: Africa Road, 6 km away'); },
+      callDriver: () => this.toast(rtl ? 'اتصال بعثمان بشير · 0912301407' : 'Calling Osman Bashir · 0912301407'),
+
+      services: [
+        { mark:'✈', title: rtl ? 'توصيل المطار' : 'Airport Transfer', sub: rtl ? 'استلام وتوصيل من كل المطارات' : 'Pickup and drop-off, all airports', go: () => this.setState({ tab:'fleet', fleetFilter:'SUV' }) },
+        { mark:'◆', title: rtl ? 'ليموزين الأعراس' : 'Wedding Limousine', sub: rtl ? 'اجعل يومك لا يُنسى' : 'Make the day unforgettable', go: () => this.setState({ tab:'fleet', fleetFilter:'VIP' }) },
+        { mark:'▣', title: rtl ? 'إيجار الشركات' : 'Corporate Rental', sub: rtl ? 'عقود طويلة وسفر تنفيذي' : 'Long-term and executive travel', go: () => this.setState({ tab:'fleet', fleetFilter:'All' }) },
+        { mark:'✆', title: rtl ? 'دعم ٢٤/٧' : '24/7 Support', sub: rtl ? 'مساعدة على الطريق في أي وقت' : 'Roadside assistance any hour', go: () => this.toast('0912301407 / 0188460022') },
+      ],
+      openRequests: s.trips.filter(tr => tr.stage < 3 && !tr.cancelled).length, monthSpend: cash(4850),
+
+      filters: filterNames.map(f => ({
+        label: filterLabels[f],
+        pick: () => this.setState({ fleetFilter:f }),
+        style:'flex:none;border-radius:100px;min-height:44px;padding:0 18px;cursor:pointer;font:600 12px ' + fam + ';border:1px solid ' + (s.fleetFilter === f ? '#DD2A26;background:#DD2A26;color:#fff' : '#E0E0E0;background:#fff;color:#4E4E52'),
+      })),
+      fleet, fleetEmpty: fleet.length === 0,
+      searching: s.searching, showResults: !s.searching,
+      skeletons: [1,2,3],
+      resultsLine: fleet.filter(v => this.freeUnits(VEHICLES.find(x => x.id === v.id)).length > 0).length + (rtl ? ' فئة متاحة · ' : ' categories free · ') + rangeLabel,
+
+      tabs: t.nav.map((label, i) => {
+        const k = ['home','fleet','trips','account'][i];
+        const on = s.tab === k;
+        return {
+          label, pick: go(k),
+          style:'position:relative;flex:1;border:0;background:transparent;min-height:60px;padding:12px 0 10px;cursor:pointer;font:600 ' + (rtl ? '11px' : '9.5px') + ' ' + fam + ';letter-spacing:' + (rtl ? '0' : '.12em') + ';color:' + (on ? '#F5B301' : '#8E8E93'),
+          barStyle:'position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;background:' + (on ? '#DD2A26' : 'transparent'),
+          dotStyle:'width:14px;height:14px;margin:0 auto 8px;transform:rotate(45deg);border:1.5px solid ' + (on ? '#F5B301' : '#6E6E72') + ';background:' + (on ? '#F5B301' : 'transparent'),
+        };
+      }),
+
+      tripTabs: [['active',t.tActive],['upcoming',t.tUpcoming],['past',t.tPast]].map(([k,label]) => ({
+        label, pick: () => this.setState({ tripTab:k }),
+        style:'flex:1;border:0;border-radius:6px;min-height:44px;cursor:pointer;font:600 12px ' + fam + ';' + (s.tripTab === k ? 'background:#fff;color:#131315;box-shadow:0 1px 3px rgba(0,0,0,.1)' : 'background:transparent;color:#5E5E62'),
+      })),
+      visibleTrips, tripsEmpty: visibleTrips.length === 0,
+      goFleetTab: go('fleet'),
+
+      cancelTarget: s.cancelTarget,
+      cancelBody: (rtl ? 'الحجز ' : 'Booking ') + (s.cancelTarget || '') + (rtl ? ' سيُلغى وسيُخطر مكتب BV.' : ' will be withdrawn and BV dispatch notified.'),
+      dismissCancel: () => this.setState({ cancelTarget:null }),
+      confirmCancel: () => {
+        this.setState({
+          trips: s.trips.map(tr => tr.ref === s.cancelTarget ? { ...tr, cancelled:true, group:'past' } : tr),
+          cancelTarget:null, tripTab:'past',
+        });
+        this.toast(rtl ? 'أُلغي الحجز' : 'Booking cancelled');
+      },
+
+      accountRows: [
+        { title: rtl ? 'الأسعار والاتفاقية' : 'Rates & agreement', sub:contractRef, trail:'›', go: () => this.toast(rtl ? 'قائمة الأسعار PDF' : 'Rate card opens as a PDF') },
+        { title: rtl ? 'الفواتير والكشوفات' : 'Invoices & statements', sub: rtl ? '٢ غير مسددة · ١٤ مسددة' : '2 outstanding · 14 settled', trail:'›', go: () => this.toast(rtl ? 'بوابة المالية' : 'Invoices open in the finance portal') },
+        { title: rtl ? 'المعتمِدون' : 'Approvers', sub: rtl ? '٣ أشخاص يعتمدون الطلبات' : '3 people can sign off requests', trail:'›', go: () => this.toast(rtl ? 'يديرها المسؤول المالي' : 'Managed by your finance focal point') },
+        { title: rtl ? 'طرق الدفع' : 'Payment methods', sub: rtl ? 'بنكك · أم بوك · فاتورة' : 'Bankak · mBOK · Invoice', trail:'›', go: () => this.toast(rtl ? 'إعدادات الدفع' : 'Payment settings') },
+        { title: rtl ? 'اللغة' : 'Language', sub: rtl ? 'العربية' : 'English', trail: rtl ? 'EN' : 'ع', go: () => this.setState({ lang: rtl ? 'en' : 'ar' }) },
+        { title: rtl ? 'الإشعارات' : 'Notifications', sub: rtl ? 'رسائل وبريد عند التأكيد' : 'Push and email on confirmation', trail:'›', go: () => this.toast(rtl ? 'إعدادات الإشعارات' : 'Notification settings') },
+        { title: rtl ? 'تابعنا' : 'Follow BV', sub:'Facebook · Instagram', trail:'›', go: () => this.toast(rtl ? 'فتح صفحة BV' : 'Opening BV Bavarian on Facebook') },
+      ],
+
+      detail: this.vehicle() ? vRow(this.vehicle()) : null,
+      detailPhotoLabel: this.vehicle() ? this.vehicle().name.toUpperCase() : '',
+      detailIncluded: this.vehicle() ? this.vehicle().inc : [],
+      detailSpecs: this.vehicle() ? [
+        { k: rtl ? 'المقاعد' : 'SEATS', v:this.vehicle().seats }, { k: rtl ? 'الحقائب' : 'BAGS', v:this.vehicle().bags },
+        { k: rtl ? 'ناقل الحركة' : 'GEARBOX', v:this.vehicle().gear }, { k: rtl ? 'الوقود' : 'FUEL', v:this.vehicle().fuel },
+      ] : [],
+      policies: [
+        { k:t.cancellation, v: rtl ? 'مجاناً حتى ٢٤ ساعة قبل الاستلام' : 'Free until 24h before pickup' },
+        { k:t.fuelPolicy, v: rtl ? 'تسليم وإرجاع بخزان ممتلئ' : 'Full to full' },
+        { k:t.mileage, v: rtl ? 'غير محدودة' : 'Unlimited' },
+        { k:t.depositPolicy, v: isOrg ? (rtl ? 'لا يوجد — على الاتفاقية' : 'None — on account') : (rtl ? '٢٥٪ عند الاستلام' : '25% at pickup') },
+      ],
+      detailTotal: this.vehicle() ? cash(this.vehicle().rate * days) : '',
+      detailCtaLabel: this.vehicle() && this.freeUnits(this.vehicle()).length === 0 ? t.notifyMe : t.rentNow,
+      detailCtaStyle: 'flex:1;border:0;border-radius:7px;min-height:50px;cursor:pointer;font:600 14px ' + fam + ';' + (this.vehicle() && this.freeUnits(this.vehicle()).length === 0 ? 'background:#EDEDED;color:#5E5E62' : 'background:#DD2A26;color:#fff'),
+      detailBackStyle: 'position:absolute;top:56px;' + (rtl ? 'right' : 'left') + ':14px;width:44px;height:44px;border-radius:100px;border:0;background:rgba(255,255,255,.92);cursor:pointer;font:400 15px ' + fam + ';color:#131315',
+      detailBadgeStyle: 'position:absolute;top:56px;' + (rtl ? 'left' : 'right') + ':14px;font:600 10px ' + fam + ';color:#131315;background:#F5B301;padding:7px 12px;border-radius:100px',
+      closeDetail: () => this.setState({ detailId:null }),
+      startBooking: () => this.freeUnits(bv).length === 0 ? this.toast(rtl ? 'سنبلغك عند التوفر' : 'We\u2019ll notify you when it frees up') : this.setState({ booking:true, step:1, touched:false }),
+
+      bookingOpen: s.booking,
+      stepTitle: stepTitles[s.step - 1], stepCaption: stepCaps[s.step - 1],
+      stepCounter: s.step < 6 ? (rtl ? s.step + '/٥' : 'STEP ' + s.step + '/5') : (rtl ? 'تم' : 'DONE'),
+      stepBars: [1,2,3,4,5].map(n => ({ style:'flex:1;height:3px;background:' + (n <= s.step ? (n === s.step ? '#F5B301' : '#DD2A26') : 'rgba(255,255,255,.15)') })),
+      step1: s.step === 1, step2: s.step === 2, step3: s.step === 3, step4: s.step === 4, step5: s.step === 5, step6: s.step === 6,
+      bookBack: () => (s.step === 1 || s.step === 6) ? this.setState({ booking:false, step:1 }) : this.setState({ step: s.step - 1 }),
+      bookingVehicleName: bv.name,
+      bookingVehicleMeta: bv.seats + (rtl ? ' مقاعد · ' : ' seats · ') + bv.gear + ' · ' + bv.badge,
+      assignedPlate: (rtl ? 'اللوحة المخصصة: ' : 'Assigned plate: ') + unit.plate,
+
+      driveModes: [
+        { title:t.chauffeur, sub: rtl ? 'سائق محترف · ٤٠ دولار/يوم' : 'Professional driver · $40/day', on:s.driver },
+        { title:t.selfDrive, sub: rtl ? 'فحص الرخصة والهوية عند الاستلام' : 'Licence and ID check at pickup', on:!s.driver },
+      ].map((m,i) => ({
+        ...m, pick: () => this.setState({ driver: i === 0 }),
+        style:'flex:1;text-align:start;border-radius:10px;padding:14px;min-height:86px;cursor:pointer;font-family:' + fam + ';border:1px solid ' + (m.on ? '#0B0B0C;background:#0B0B0C;color:#fff' : '#E6E6E6;background:#fff;color:#131315'),
+      })),
+      addons: ADDONS.map(a => {
+        const on = s.addons[a.id];
+        return {
+          title: rtl ? a.ar : a.en,
+          sub: (rtl ? a.arSub : a.enSub) + ' · ' + cash(a.price) + (a.unit === 'day' ? t.perDay : rtl ? ' مرة واحدة' : ' once'),
+          toggle: () => this.setState({ addons:{ ...s.addons, [a.id]: !on } }),
+          switchTrack:'width:42px;height:24px;flex:none;border-radius:100px;padding:3px;transition:background .16s;background:' + (on ? '#DD2A26' : '#D2D2D5'),
+          switchKnob:'width:18px;height:18px;border-radius:100px;background:#fff;transition:transform .16s;transform:translateX(' + (on ? (rtl ? '-18px' : '18px') : '0') + ')',
+        };
+      }),
+      driverNote: s.driver
+        ? (rtl ? 'سائقو BV يعرفون الخرطوم والطرق إلى الولايات، ويُطلعون على التعليمات قبل كل رحلة. الوقود يُحتسب منفصلاً.' : 'BV chauffeurs know Khartoum and the routes out to the states, and are briefed before every hire. Fuel is billed separately.')
+        : (rtl ? 'القيادة الذاتية تتطلب رخصة سارية وهوية عند الاستلام، وقد تطلب BV عربوناً للسيارات الكبيرة.' : 'Self-drive needs a valid licence and ID at pickup. For Land Cruisers and the limousine BV may ask for a deposit.'),
+
+      acctModes: t.acctTypes.map((label,i) => {
+        const key = ['UN & INGO','Business','Individual'][i];
+        return {
+          label, pick: () => this.setState({ acctMode:key, touched:false, payId:null }),
+          style:'flex:1;border-radius:7px;min-height:46px;padding:0 4px;cursor:pointer;font:600 11px ' + fam + ';border:1px solid ' + (mode === key ? '#0B0B0C;background:#0B0B0C;color:#fff' : '#E6E6E6;background:#fff;color:#4E4E52'),
+        };
+      }),
+      formFields: fields.map(f => {
+        const bad = s.touched && ['org','code2'].includes(f.key) && !String(s[f.key]).trim();
+        return {
+          label:f.label, placeholder:f.ph, value:s[f.key],
+          hint: bad ? t.required : f.hint,
+          hintStyle:'font:300 10.5px ' + fam + ';color:' + (bad ? '#C41F1B' : '#6E6E72') + ';margin-top:7px',
+          onChange: e => this.setState({ [f.key]: e.target.value }),
+          style:'width:100%;border-radius:8px;min-height:48px;padding:0 14px;font:400 13px ' + fam + ';color:#131315;outline:none;background:#fff;border:1px solid ' + (bad ? '#DD2A26' : '#E6E6E6'),
+        };
+      }),
+      needsApproval,
+      approvers: APPROVERS.map((a,i) => ({
+        name: rtl ? a.ar : a.en, role: rtl ? a.arRole : a.enRole,
+        pick: () => this.setState({ approverIdx:i }),
+        style: rowBtn(i === s.approverIdx), radio: radioOn(i === s.approverIdx),
+      })),
+      payMethods: PAY.filter(p => !p.orgOnly || isOrg).map(p => ({
+        name: rtl ? p.ar : p.en, sub: rtl ? p.arSub : p.enSub,
+        pick: () => this.setState({ payId:p.id }),
+        style: rowBtn(p.id === payId), radio: radioOn(p.id === payId),
+      })),
+      depositLabel: deposit === 0 ? (rtl ? 'لا يوجد' : 'None') : cash(deposit),
+      depositNote: deposit === 0
+        ? (rtl ? 'الحجوزات على الاتفاقية لا تتطلب عربوناً؛ تُفوتر بشروط ٣٠ يوماً.' : 'Hires on your agreement need no deposit — invoiced on 30-day terms.')
+        : (rtl ? '٢٥٪ من الإجمالي عند الاستلام، ويُخصم من الفاتورة النهائية.' : '25% of the total at pickup, credited against the final invoice.'),
+
+      locationOptions: LOCS.map((l,i) => ({
+        name: rtl ? l.ar : l.en, sub: rtl ? l.arSub : l.enSub,
+        pick: () => this.setState({ locIdx:i }),
+        style: rowBtn(i === s.locIdx), radio: radioOn(i === s.locIdx),
+      })),
+
+      reviewRows: [
+        { k:t.pickupDate, v: startLabel + ' · ' + locationLabel },
+        { k:t.returnDate, v: endLabel + ' · ' + nightsLine },
+        { k:t.driver, v: s.driver ? t.chauffeur + ' · ' + unit.plate : t.selfDrive + ' · ' + unit.plate },
+        { k:t.addons, v: ADDONS.filter(a => s.addons[a.id]).map(a => rtl ? a.ar : a.en).join(', ') || (rtl ? 'لا شيء' : 'None') },
+        { k:t.billTo, v: (s.org || accountName) + (s.code2 ? ' · ' + s.code2 : '') },
+        { k:t.payment, v: (PAY.find(p => p.id === payId) || PAY[1])[rtl ? 'ar' : 'en'] },
+      ].concat(needsApproval ? [{ k:t.approver, v: rtl ? APPROVERS[s.approverIdx].ar : APPROVERS[s.approverIdx].en }] : []),
+      costRows: [
+        { k: bv.name + ' × ' + nightsLine, v: cash(base) },
+        { k: s.driver ? t.chauffeurLine + ' × ' + nightsLine : t.selfDrive, v: cash(driverFee) },
+        { k: t.extrasLine, v: cash(extras) },
+        { k: t.vat, v: cash(vat) },
+      ],
+      totalLabel: cash(total),
+      totalNote: deposit === 0
+        ? (rtl ? 'يشمل الضريبة. لا يشمل الوقود. تؤكد BV خلال ساعتي عمل.' : 'Includes VAT, excludes fuel. BV confirms within 2 working hours.')
+        : (rtl ? 'يشمل الضريبة. العربون ' : 'Includes VAT. Deposit of ') + cash(deposit) + (rtl ? ' عند الاستلام.' : ' due at pickup.'),
+      submitting: s.submitting, submitFailed: s.submitFailed,
+      whatsappFallback: () => { this.setState({ submitFailed:false }); this.toast(rtl ? 'فتح واتساب مع مكتب BV' : 'Opening WhatsApp to BV dispatch'); },
+      primaryLabel: s.submitting ? (rtl ? 'جارٍ الإرسال…' : 'Sending…')
+        : s.step === 5 ? (needsApproval ? t.sendForApproval : t.sendRequest)
+        : s.step === 6 ? t.viewInTrips : t.continue,
+      primaryStyle: 'width:100%;border:0;border-radius:7px;min-height:50px;cursor:' + (s.submitting ? 'default' : 'pointer') + ';font:600 13.5px ' + fam + ';color:#fff;background:' + (s.submitting ? '#A8A8AC' : (blocked && s.touched) ? '#B9B9BC' : '#DD2A26'),
+      bookNext,
+      showBlocked: blocked && s.touched, blockedMessage: t.required,
+      doneTitle: needsApproval ? t.sentForApproval : t.requestSent,
+      doneBody: needsApproval ? t.approvalBody : t.requestSentBody,
+      newRef: s.newRef,
+      toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
